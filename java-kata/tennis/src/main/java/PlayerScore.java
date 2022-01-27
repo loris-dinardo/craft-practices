@@ -17,11 +17,20 @@ public class PlayerScore {
         return score;
     }
 
-    public void playedHasScored(){
-        if (this.score.equals("15")) {
-            this.score = "30";
-        } else {
-            this.score = "15";
+    public void playedHasScored() {
+        switch (this.score) {
+            case "40":
+                this.score = "Won";
+                break;
+            case "30":
+                this.score = "40";
+                break;
+            case "15":
+                this.score = "30";
+                break;
+            case "0":
+                this.score = "15";
+                break;
         }
     }
 }
