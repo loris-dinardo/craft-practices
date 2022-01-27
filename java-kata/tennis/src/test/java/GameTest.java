@@ -41,6 +41,30 @@ public class GameTest {
         assertEquals("0:15", sut.getScore());
     }
 
+    @Test
+    @Description("When player One has already scored once and he scores again, the score should indicate it")
+    public void scoreShouldBeIndicatePlayerOneHasScoreTwiceWhenHeScoreASecondTime(){
+        // arrange
+        Game sut = new Game("15", "0");
 
+        // act
+        sut.playerOneHasScored();
+
+        // assert
+        assertEquals("30:0", sut.getScore());
+    }
+
+    @Test
+    @Description("When player Two has already scored once and he scores again, the score should indicate it")
+    public void scoreShouldBeIndicatePlayerTwoHasScoreTwiceWhenHeScoreASecondTime(){
+        // arrange
+        Game sut = new Game("0", "15");
+
+        // act
+        sut.playerTwoHasScored();
+
+        // assert
+        assertEquals("0:30", sut.getScore());
+    }
 
 }

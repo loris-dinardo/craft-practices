@@ -1,21 +1,26 @@
 public class Game {
-    private String scorePlayerOne;
-    private String scorePlayerTwo;
+    private final PlayerScore scorePlayerOne;
+    private final PlayerScore scorePlayerTwo;
 
     public Game() {
-        this.scorePlayerOne = "0";
-        this.scorePlayerTwo = "0";
+        this.scorePlayerOne = PlayerScore.withoutInitialValue();
+        this.scorePlayerTwo = PlayerScore.withoutInitialValue();
+    }
+
+    public Game(String playerOneInitialScore, String playerTwoInitialScore) {
+        this.scorePlayerOne = PlayerScore.withInitialValue(playerOneInitialScore);
+        this.scorePlayerTwo = PlayerScore.withInitialValue(playerTwoInitialScore);
     }
 
     public String getScore() {
-        return this.scorePlayerOne + ":" + this.scorePlayerTwo;
+        return this.scorePlayerOne.getScore() + ":" + this.scorePlayerTwo.getScore();
     }
 
     public void playerOneHasScored() {
-        this.scorePlayerOne = "15";
+        this.scorePlayerOne.playedHasScored();
     }
 
     public void playerTwoHasScored() {
-        this.scorePlayerTwo = "15";
+        this.scorePlayerTwo.playedHasScored();
     }
 }
