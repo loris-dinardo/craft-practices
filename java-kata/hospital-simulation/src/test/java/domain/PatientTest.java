@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatientTest {
     @Nested
-    @Description("Patient who got no previous medication")
+    @Description("Patient who receives no drug")
     class PatientWhoReceivesNoDrugTestCase {
         @Test
         @Description("Healthy patient should stay healthy when receives no drug")
@@ -16,11 +16,8 @@ public class PatientTest {
             // arrange
             Patient sut = PatientFactory.getHealthyPatient();
 
-            // act
-            sut.receiveNoDrug();
-
             // assert
-            assertEquals(sut.getState(), PatientState.HEALTHY);
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
         }
 
         @Test
@@ -29,11 +26,8 @@ public class PatientTest {
             // arrange
             Patient sut = PatientFactory.getPatientWithFever();
 
-            // act
-            sut.receiveNoDrug();
-
             // assert
-            assertEquals(sut.getState(), PatientState.FEVER);
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.FEVER);
         }
 
         @Test
@@ -42,11 +36,8 @@ public class PatientTest {
             // arrange
             Patient sut = PatientFactory.getPatientWithDiabetes();
 
-            // act
-            sut.receiveNoDrug();
-
             // assert
-            assertEquals(sut.getState(), PatientState.DEAD);
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DEAD);
         }
 
         @Test
@@ -55,11 +46,8 @@ public class PatientTest {
             // arrange
             Patient sut = PatientFactory.getPatientWithTuberculosis();
 
-            // act
-            sut.receiveNoDrug();
-
             // assert
-            assertEquals(sut.getState(), PatientState.TUBERCULOSIS);
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.TUBERCULOSIS);
         }
 
         @Test
@@ -68,11 +56,72 @@ public class PatientTest {
             // arrange
             Patient sut = PatientFactory.getDeadPatient();
 
+            // assert
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DEAD);
+        }
+    }
+
+    @Nested
+    @Description("Patient with fever who receives one drug")
+    class PatientWithFeverWhoReceivesOneDrugTestCase {
+        @Test
+        @Description("Patient with fever should get healthy when receives aspirin")
+        public void patientWithFeverShouldGetHealthyWithAspirin() {
+            // arrange
+            Patient sut = PatientFactory.getPatientWithFever();
+
             // act
-            sut.receiveNoDrug();
+            sut.receivesDrug(Drug.ASPIRIN);
 
             // assert
-            assertEquals(sut.getState(), PatientState.DEAD);
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+        }
+
+        @Test
+        @Description("Patient with fever should get healthy when receives paracetamol")
+        public void patientWithFeverShouldGetHealthyWithParacetamol() {
+            // arrange
+            Patient sut = PatientFactory.getPatientWithFever();
+
+            // act
+            sut.receivesDrug(Drug.PARACETAMOL);
+
+            // assert
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+        }
+    }
+
+    @Nested
+    @Description("Patient with Tuberculosis who receives one drug")
+    class PatientWithTuberculosisWhoReceivesOneDrugTestCase {
+        @Test
+        @Description("Patient with tuberculosis should get healthy when receives antibiotic")
+        public void patientWithTuberculosisShouldGetHealthyWithAntibiotic() {
+            // arrange
+            Patient sut = PatientFactory.getPatientWithTuberculosis();
+
+            // act
+            sut.receivesDrug(Drug.ANTIBIOTIC);
+
+            // assert
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+        }
+    }
+
+    @Nested
+    @Description("Patient with Diabetes who receives one drug")
+    class PatientWithDiabetesWhoReceivesOneDrugTestCase {
+        @Test
+        @Description("Patient with diabetes should remain with diabetes when receives insulin")
+        public void patientWithDiabetesShouldRemainDiabetesWithInsulin() {
+            // arrange
+            Patient sut = PatientFactory.getPatientWithDiabetes();
+
+            // act
+            sut.receivesDrug(Drug.INSULIN);
+
+            // assert
+            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DIABETES);
         }
     }
 }
