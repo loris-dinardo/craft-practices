@@ -25,7 +25,7 @@ public class Game {
     }
 
     public String getWinner() {
-        if (this.scorePlayerOne.getScore().equals("Won")){
+        if (this.scorePlayerOne.getScore().equals("Won")) {
             return "Player One";
         }
         return "";
