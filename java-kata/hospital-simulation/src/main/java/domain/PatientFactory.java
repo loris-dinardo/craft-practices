@@ -2,22 +2,22 @@ package domain;
 
 public class PatientFactory {
     public static Patient getHealthyPatient() {
-        return new Patient(PatientState.HEALTHY);
+        return new Patient(PatientState.of(State.HEALTHY));
     }
 
     public static Patient getPatientWithFever() {
-        return new Patient(PatientState.FEVER);
+        return new Patient(PatientState.of(State.FEVER));
     }
 
     public static Patient getPatientWithDiabetes() {
-        return new Patient(PatientState.DIABETES);
+        return new Patient(PatientState.of(State.DIABETES));
     }
 
     public static Patient getPatientWithTuberculosis() {
-        return new Patient(PatientState.TUBERCULOSIS);
+        return new Patient(PatientState.of(State.TUBERCULOSIS));
     }
 
     public static Patient getDeadPatient() {
-        return new Patient(PatientState.DEAD);
+        return new Patient(PatientState.of(State.DEAD));
     }
 }
