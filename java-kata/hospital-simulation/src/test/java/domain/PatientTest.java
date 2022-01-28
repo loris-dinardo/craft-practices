@@ -4,6 +4,8 @@ import jdk.jfr.Description;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatientTest {
@@ -17,7 +19,7 @@ public class PatientTest {
             Patient sut = PatientFactory.getHealthyPatient();
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+            assertEquals(PatientState.HEALTHY, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
 
         @Test
@@ -27,7 +29,7 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithFever();
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.FEVER);
+            assertEquals(PatientState.FEVER, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
 
         @Test
@@ -37,7 +39,7 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithDiabetes();
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DEAD);
+            assertEquals(PatientState.DEAD, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
 
         @Test
@@ -47,7 +49,7 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithTuberculosis();
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.TUBERCULOSIS);
+            assertEquals(PatientState.TUBERCULOSIS, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
 
         @Test
@@ -57,7 +59,7 @@ public class PatientTest {
             Patient sut = PatientFactory.getDeadPatient();
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DEAD);
+            assertEquals(PatientState.DEAD, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
     }
 
@@ -71,10 +73,10 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithFever();
 
             // act
-            sut.receivesDrug(Drug.ASPIRIN);
+            sut.receivesDrugs(List.of(Drug.ASPIRIN));
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+            assertEquals(PatientState.HEALTHY, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
 
         @Test
@@ -84,10 +86,10 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithFever();
 
             // act
-            sut.receivesDrug(Drug.PARACETAMOL);
+            sut.receivesDrugs(List.of(Drug.PARACETAMOL));
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+            assertEquals(PatientState.HEALTHY, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
     }
 
@@ -101,10 +103,10 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithTuberculosis();
 
             // act
-            sut.receivesDrug(Drug.ANTIBIOTIC);
+            sut.receivesDrugs(List.of(Drug.ANTIBIOTIC));
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.HEALTHY);
+            assertEquals(PatientState.HEALTHY, sut.getStateAfterDrugsMightHaveBeenAdministrated());
         }
     }
 
@@ -118,10 +120,82 @@ public class PatientTest {
             Patient sut = PatientFactory.getPatientWithDiabetes();
 
             // act
-            sut.receivesDrug(Drug.INSULIN);
+            sut.receivesDrugs(List.of(Drug.INSULIN));
 
             // assert
-            assertEquals(sut.getStateAfterDrugsMightHaveBeenAdministrated(), PatientState.DIABETES);
+            assertEquals(PatientState.DIABETES, sut.getStateAfterDrugsMightHaveBeenAdministrated());
+        }
+    }
+
+    @Nested
+    @Description("Healthy patient who receives two drugs")
+    class PatientHealthyWhoReceivesTwoDrugTestCase {
+        @Test
+        @Description("Healthy patient should get fever when receives insulin mixed with antibiotic")
+        public void patientHealthyShouldGetFeverWithInsulinMixedWithAntibiotic() {
+            // arrange
+            Patient sut = PatientFactory.getHealthyPatient();
+
+            // act
+            sut.receivesDrugs(List.of(Drug.INSULIN, Drug.ANTIBIOTIC));
+
+            // assert
+            assertEquals(PatientState.FEVER, sut.getStateAfterDrugsMightHaveBeenAdministrated());
+        }
+    }
+
+    @Nested
+    @Description("Any patient who receives two drugs")
+    class PatientAnyWhoReceivesTwoDrugTestCase {
+        private void assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(PatientState state) {
+            Patient sut;
+            switch (state) {
+                case HEALTHY:
+                    sut = PatientFactory.getHealthyPatient();
+                    break;
+                case FEVER:
+                    sut = PatientFactory.getPatientWithFever();
+                    break;
+                case DIABETES:
+                    sut = PatientFactory.getPatientWithDiabetes();
+                    break;
+                case TUBERCULOSIS:
+                    sut = PatientFactory.getPatientWithTuberculosis();
+                    break;
+                default:
+                    sut = PatientFactory.getDeadPatient();
+            }
+            // act
+            sut.receivesDrugs(List.of(Drug.PARACETAMOL, Drug.ASPIRIN));
+
+            // assert
+            assertEquals(PatientState.DEAD, sut.getStateAfterDrugsMightHaveBeenAdministrated());
+
+        }
+
+
+        @Test
+        @Description("Healthy patient should died when receives paracetamol with aspirin")
+        public void patientHealthyShouldDiedWithParacetamolMixedWithAspirin() {
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(PatientState.HEALTHY);
+        }
+
+        @Test
+        @Description("Patient with fever should died when receives paracetamol with aspirin")
+        public void patientWithFeverShouldDiedWithParacetamolMixedWithAspirin() {
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(PatientState.FEVER);
+        }
+
+        @Test
+        @Description("Patient with diabetes should died when receives paracetamol with aspirin")
+        public void patientWithDiabetesShouldDiedWithParacetamolMixedWithAspirin() {
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(PatientState.DIABETES);
+        }
+
+        @Test
+        @Description("Patient with tuberculosis should died when receives paracetamol with aspirin")
+        public void patientWithTuberculosisShouldDiedWithParacetamolMixedWithAspirin() {
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(PatientState.TUBERCULOSIS);
         }
     }
 }
