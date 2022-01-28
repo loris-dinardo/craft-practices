@@ -1,5 +1,7 @@
 package domain;
 
-public enum State {
-    FEVER, DIABETES, DEAD, TUBERCULOSIS, HEALTHY
+import java.util.List;
+
+public interface State {
+    State stateAfterReceivingDrugs(List<Drug> drugs);
 }

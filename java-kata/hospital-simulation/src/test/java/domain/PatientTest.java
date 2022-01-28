@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PatientTest {
     @Nested
@@ -15,60 +15,55 @@ public class PatientTest {
         @Test
         @Description("Healthy patient should stay healthy when receives no drug")
         public void patientHealthyShouldStayHealthy() {
-            assertEquals(
-                    State.HEALTHY,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withHealthyPatient()
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof HealthyState
             );
         }
 
         @Test
         @Description("Patient with fever should stay with fever when receives no drug")
         public void patientWithFeverShouldStayWithFever() {
-            assertEquals(
-                    State.FEVER,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithFever()
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof FeverState
             );
         }
 
         @Test
         @Description("Patient with Diabetes should die when receives no drug")
         public void patientWithDiabetesShouldDie() {
-            assertEquals(
-                    State.DEAD,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithDiabetes()
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof DeadState
             );
         }
 
         @Test
         @Description("Patient with Tuberculosis should stay with Tuberculosis when receives no drug")
         public void patientWithTuberculosisShouldStayWithTuberculosis() {
-            assertEquals(
-                    State.TUBERCULOSIS,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithTuberculosis()
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof TuberculosisState
             );
         }
 
         @Test
         @Description("Dead patient should stay dead when receives no drug")
         public void patientDeadShouldStayDead() {
-            assertEquals(
-                    State.DEAD,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withDeadPatient()
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof DeadState
             );
         }
     }
@@ -79,26 +74,24 @@ public class PatientTest {
         @Test
         @Description("Patient with fever should get healthy when receives aspirin")
         public void patientWithFeverShouldGetHealthyWithAspirin() {
-            assertEquals(
-                    State.HEALTHY,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithFever()
                             .receivingDrugs(List.of(Drug.ASPIRIN))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof HealthyState
             );
         }
 
         @Test
         @Description("Patient with fever should get healthy when receives paracetamol")
         public void patientWithFeverShouldGetHealthyWithParacetamol() {
-            assertEquals(
-                    State.HEALTHY,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithFever()
                             .receivingDrugs(List.of(Drug.PARACETAMOL))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof HealthyState
             );
         }
     }
@@ -109,13 +102,12 @@ public class PatientTest {
         @Test
         @Description("Patient with tuberculosis should get healthy when receives antibiotic")
         public void patientWithTuberculosisShouldGetHealthyWithAntibiotic() {
-            assertEquals(
-                    State.HEALTHY,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithTuberculosis()
                             .receivingDrugs(List.of(Drug.ANTIBIOTIC))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof HealthyState
             );
         }
     }
@@ -126,13 +118,12 @@ public class PatientTest {
         @Test
         @Description("Patient with diabetes should remain with diabetes when receives insulin")
         public void patientWithDiabetesShouldRemainDiabetesWithInsulin() {
-            assertEquals(
-                    State.DIABETES,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withPatientWithDiabetes()
                             .receivingDrugs(List.of(Drug.INSULIN))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof DiabetesState
             );
         }
     }
@@ -143,13 +134,12 @@ public class PatientTest {
         @Test
         @Description("Healthy patient should get fever when receives insulin mixed with antibiotic")
         public void patientHealthyShouldGetFeverWithInsulinMixedWithAntibiotic() {
-            assertEquals(
-                    State.FEVER,
+            assertTrue(
                     PatientSutBuilder.builder()
                             .withHealthyPatient()
                             .receivingDrugs(List.of(Drug.INSULIN, Drug.ANTIBIOTIC))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof FeverState
             );
         }
     }
@@ -158,54 +148,37 @@ public class PatientTest {
     @Description("Any patient who receives two drugs")
     class PatientAnyWhoReceivesTwoDrugTestCase {
         private void assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(State state) {
-            PatientSutBuilder builder = PatientSutBuilder.builder();
-            switch (state) {
-                case HEALTHY:
-                    builder.withHealthyPatient();
-                    break;
-                case FEVER:
-                    builder.withPatientWithFever();
-                    break;
-                case DIABETES:
-                    builder.withPatientWithDiabetes();
-                    break;
-                case TUBERCULOSIS:
-                    builder.withPatientWithTuberculosis();
-                    break;
-                default:
-                    builder.withDeadPatient();
-            }
-            assertEquals(
-                    State.DEAD,
-                    builder
+            assertTrue(
+                    PatientSutBuilder.builder()
+                            .withPatientStat(state)
                             .receivingDrugs(List.of(Drug.PARACETAMOL, Drug.ASPIRIN))
                             .build()
-                            .getStateAfterDrugsMightHaveBeenAdministrated()
+                            .stateAfterDrugsWereAdministrated() instanceof DeadState
             );
         }
 
         @Test
         @Description("Healthy patient should died when receives paracetamol with aspirin")
         public void patientHealthyShouldDiedWithParacetamolMixedWithAspirin() {
-            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(State.HEALTHY);
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(new HealthyState());
         }
 
         @Test
         @Description("Patient with fever should died when receives paracetamol with aspirin")
         public void patientWithFeverShouldDiedWithParacetamolMixedWithAspirin() {
-            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(State.FEVER);
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(new FeverState());
         }
 
         @Test
         @Description("Patient with diabetes should died when receives paracetamol with aspirin")
         public void patientWithDiabetesShouldDiedWithParacetamolMixedWithAspirin() {
-            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(State.DIABETES);
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(new DiabetesState());
         }
 
         @Test
         @Description("Patient with tuberculosis should died when receives paracetamol with aspirin")
         public void patientWithTuberculosisShouldDiedWithParacetamolMixedWithAspirin() {
-            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(State.TUBERCULOSIS);
+            this.assertPatientStateDeadWhenReceivingParacetamolMixedWithAspirinWhenState(new TuberculosisState());
         }
     }
 }

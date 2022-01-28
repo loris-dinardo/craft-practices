@@ -3,19 +3,23 @@ package domain;
 import java.util.List;
 
 public class Patient {
-    private final PatientState patientState;
-    private List<Drug> receivedDrugs;
+    private final State patientState;
+    private List<Drug> drugsToBeReceived;
 
-    protected Patient(PatientState patientState) {
+    private Patient(State patientState) {
         this.patientState = patientState;
-        this.receivedDrugs = List.of();
+        this.drugsToBeReceived = List.of();
     }
 
-    public State getStateAfterDrugsMightHaveBeenAdministrated() {
-        return this.patientState.getNextStateWhenDrugsReceived(this.receivedDrugs);
+    public static Patient withState(State initialState) {
+        return new Patient(initialState);
     }
 
-    public void receivesDrugs(List<Drug> drugs) {
-        this.receivedDrugs = drugs;
+    public State stateAfterDrugsWereAdministrated() {
+        return this.patientState.stateAfterReceivingDrugs(this.drugsToBeReceived);
+    }
+
+    public void prepareDrugsToBeAdministrated(List<Drug> drugs) {
+        this.drugsToBeReceived = drugs;
     }
 }

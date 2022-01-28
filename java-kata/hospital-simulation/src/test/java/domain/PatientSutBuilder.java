@@ -9,33 +9,38 @@ public class PatientSutBuilder {
         return new PatientSutBuilder();
     }
 
+    public PatientSutBuilder withPatientStat(State state) {
+        sut = Patient.withState(state);
+        return this;
+    }
+
     public PatientSutBuilder withHealthyPatient() {
-        sut = PatientFactory.getHealthyPatient();
+        sut = Patient.withState(new HealthyState());
         return this;
     }
 
     public PatientSutBuilder withDeadPatient() {
-        sut = PatientFactory.getDeadPatient();
+        sut = Patient.withState(new DeadState());
         return this;
     }
 
     public PatientSutBuilder withPatientWithFever() {
-        sut = PatientFactory.getPatientWithFever();
+        sut = Patient.withState(new FeverState());
         return this;
     }
 
     public PatientSutBuilder withPatientWithDiabetes() {
-        sut = PatientFactory.getPatientWithDiabetes();
+        sut = Patient.withState(new DiabetesState());
         return this;
     }
 
     public PatientSutBuilder withPatientWithTuberculosis() {
-        sut = PatientFactory.getPatientWithTuberculosis();
+        sut = Patient.withState(new TuberculosisState());
         return this;
     }
 
     public PatientSutBuilder receivingDrugs(List<Drug> drugs) {
-        sut.receivesDrugs(drugs);
+        sut.prepareDrugsToBeAdministrated(drugs);
         return this;
     }
 
