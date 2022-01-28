@@ -8,9 +8,9 @@ public class DiabetesState implements State {
         if (drugs.contains(Drug.PARACETAMOL) && drugs.contains(Drug.ASPIRIN)) {
             return new DeadState();
         }
-        if (!drugs.contains(Drug.INSULIN)) {
-            return new DeadState();
+        if (drugs.contains(Drug.INSULIN)) {
+            return new DiabetesState();
         }
-        return new DiabetesState();
+        return new DeadState();
     }
 }
