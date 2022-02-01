@@ -6,14 +6,14 @@ import java.util.List;
 public class CustomerLegacy {
 
     private String _name;
-    private List<Rental> _rentals = new ArrayList<Rental>();
+    private List<RentalLegacy> _rentalLegacies = new ArrayList<RentalLegacy>();
 
     public CustomerLegacy(String name) {
         _name = name;
     }
 
-    public void addRental(Rental arg) {
-        _rentals.add(arg);
+    public void addRental(RentalLegacy arg) {
+        _rentalLegacies.add(arg);
     }
 
     public String getName() {
@@ -25,7 +25,7 @@ public class CustomerLegacy {
         int frequentRenterPoints = 0;
         String result = "Rental Record for " + getName() + "\n";
 
-        for (Rental each : _rentals) {
+        for (RentalLegacy each : _rentalLegacies) {
             double thisAmount = 0;
 
             //determine amounts for each line

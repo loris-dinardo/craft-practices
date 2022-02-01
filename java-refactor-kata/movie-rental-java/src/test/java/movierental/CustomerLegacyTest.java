@@ -42,7 +42,7 @@ public class CustomerLegacyTest {
     private void addRentalForCustomer(CustomerLegacy customerLegacy,
                                       Customer customer,
                                       TestRental rental) {
-        customerLegacy.addRental(new Rental(new Movie(rental.movieTitle, rental.moviePriceCode), rental.daysRented));
+        customerLegacy.addRental(new RentalLegacy(new MovieLegacy(rental.movieTitle, rental.moviePriceCode), rental.daysRented));
         customer.addRental(new Rental(new Movie(rental.movieTitle, rental.moviePriceCode), rental.daysRented));
     }
 }

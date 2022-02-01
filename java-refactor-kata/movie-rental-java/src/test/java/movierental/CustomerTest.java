@@ -9,13 +9,13 @@ public class CustomerTest {
 
     @Test
     public void test() {
-        Customer customer = new Customer("Bob");
-        customer.addRental(new Rental(new Movie("Jaws", Movie.REGULAR), 2));
-        customer.addRental(new Rental(new Movie("Golden Eye", Movie.REGULAR), 3));
-        customer.addRental(new Rental(new Movie("Short New", Movie.NEW_RELEASE), 1));
-        customer.addRental(new Rental(new Movie("Long New", Movie.NEW_RELEASE), 2));
-        customer.addRental(new Rental(new Movie("Bambi", Movie.CHILDRENS), 3));
-        customer.addRental(new Rental(new Movie("Toy Story", Movie.CHILDRENS), 4));
+        CustomerLegacy customer = new CustomerLegacy("Bob");
+        customer.addRental(new RentalLegacy(new MovieLegacy("Jaws", Movie.REGULAR), 2));
+        customer.addRental(new RentalLegacy(new MovieLegacy("Golden Eye", Movie.REGULAR), 3));
+        customer.addRental(new RentalLegacy(new MovieLegacy("Short New", Movie.NEW_RELEASE), 1));
+        customer.addRental(new RentalLegacy(new MovieLegacy("Long New", Movie.NEW_RELEASE), 2));
+        customer.addRental(new RentalLegacy(new MovieLegacy("Bambi", Movie.CHILDRENS), 3));
+        customer.addRental(new RentalLegacy(new MovieLegacy("Toy Story", Movie.CHILDRENS), 4));
 
         String expected = "" +
                 "Rental Record for Bob\n" +
