@@ -1,14 +1,14 @@
-package movierental;
+package movierental.legacy;
 
 /**
  * The rental class represents a customer renting a movie.
  */
-public class Rental {
+public class RentalLegacy {
 
-    private Movie _movie;
+    private MovieLegacy _movie;
     private int _daysRented;
 
-    public Rental(Movie movie, int daysRented) {
+    public RentalLegacy(MovieLegacy movie, int daysRented) {
         _movie = movie;
         _daysRented = daysRented;
     }
@@ -17,7 +17,7 @@ public class Rental {
         return _daysRented;
     }
 
-    public Movie getMovie() {
+    public MovieLegacy getMovie() {
         return _movie;
     }
 }

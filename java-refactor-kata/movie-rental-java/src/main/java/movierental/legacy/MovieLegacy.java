@@ -1,6 +1,6 @@
-package movierental;
+package movierental.legacy;
 
-public class Movie {
+public class MovieLegacy {
 
     public static final int CHILDRENS = 2;
     public static final int NEW_RELEASE = 1;
@@ -9,7 +9,7 @@ public class Movie {
     private String _title;
     private int _priceCode;
 
-    public Movie(String title, int priceCode) {
+    public MovieLegacy(String title, int priceCode) {
         _title = title;
         _priceCode = priceCode;
     }

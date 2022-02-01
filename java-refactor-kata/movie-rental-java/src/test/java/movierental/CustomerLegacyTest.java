@@ -1,5 +1,9 @@
 package movierental;
 
+import movierental.legacy.CustomerLegacy;
+import movierental.legacy.MovieLegacy;
+import movierental.legacy.RentalLegacy;
+import movierental.refactor.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -20,12 +24,12 @@ public class CustomerLegacyTest {
     }
 
     List<TestRental> rentals = List.of(
-            new TestRental("Jaws", Movie.REGULAR, 2),
-            new TestRental("Golden Eye", Movie.REGULAR, 3),
-            new TestRental("Short New", Movie.NEW_RELEASE, 1),
-            new TestRental("Long New", Movie.NEW_RELEASE, 2),
-            new TestRental("Bambi", Movie.CHILDRENS, 3),
-            new TestRental("Toy Story", Movie.CHILDRENS, 4)
+            new TestRental("Jaws", MovieLegacy.REGULAR, 2),
+            new TestRental("Golden Eye", MovieLegacy.REGULAR, 3),
+            new TestRental("Short New", MovieLegacy.NEW_RELEASE, 1),
+            new TestRental("Long New", MovieLegacy.NEW_RELEASE, 2),
+            new TestRental("Bambi", MovieLegacy.CHILDRENS, 3),
+            new TestRental("Toy Story", MovieLegacy.CHILDRENS, 4)
     );
 
     @Test
@@ -42,7 +46,21 @@ public class CustomerLegacyTest {
     private void addRentalForCustomer(CustomerLegacy customerLegacy,
                                       Customer customer,
                                       TestRental rental) {
-        customerLegacy.addRental(new RentalLegacy(new MovieLegacy(rental.movieTitle, rental.moviePriceCode), rental.daysRented));
-        customer.addRental(new Rental(new Movie(rental.movieTitle, rental.moviePriceCode), rental.daysRented));
+        customerLegacy.addRental(new RentalLegacy(new MovieLegacy(rental.movieTitle, rental.moviePriceCode),
+                rental.daysRented));
+
+        customer.addRental(getMovieByPriceCode(rental.movieTitle, rental.moviePriceCode),
+                rental.daysRented);
+    }
+
+    private Movie getMovieByPriceCode(String title, int priceCode) {
+        switch (priceCode) {
+            default:
+                return new MovieRegular(title);
+            case MovieLegacy.NEW_RELEASE:
+                return new MovieNewRelease(title);
+            case MovieLegacy.CHILDRENS:
+                return new MovieForChildren(title);
+        }
     }
 }
