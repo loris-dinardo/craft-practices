@@ -19,26 +19,20 @@ public class Customer {
     public void addRental(Movie movie, int rentalDayDuration) {
         Rental rental = new Rental(movie, rentalDayDuration);
 
-        _totalAmountOwedByCustomer += rental.amountOwedByRental();
-        _totalFrequentRenterPointsEarnedByCustomer += rental.getFrequentRenterPoints();
+        _totalAmountOwedByCustomer += rental.amountOwedForRental();
+        _totalFrequentRenterPointsEarnedByCustomer += rental.frequentRenterPointsEarnedForRental();
 
         _rentals.add(rental);
     }
 
-    public String statement() {
-        return statementHeader() + statementBody() + statementFooter();
+    public String statement(Renderer renderer) {
+        return renderer.renderHeader(_name) +
+                statementBody(renderer) +
+                renderer.renderFooter(_totalAmountOwedByCustomer, _totalFrequentRenterPointsEarnedByCustomer);
     }
 
-    private String statementHeader() {
-        return "Rental Record for " + this._name + "\n";
-    }
-
-    private String statementBody() {
-        return _rentals.stream().map(rental -> "\t" + rental.displayFigures() + "\n").collect(Collectors.joining());
-    }
-
-    private String statementFooter() {
-        return "Amount owed is " + _totalAmountOwedByCustomer + "\n" +
-                "You earned " + _totalFrequentRenterPointsEarnedByCustomer + " frequent renter points";
+    private String statementBody(Renderer renderer) {
+        return _rentals.stream().map(rental -> renderer.renderBody(rental.movieTitleRented(),
+                rental.amountOwedForRental())).collect(Collectors.joining());
     }
 }

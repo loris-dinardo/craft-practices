@@ -4,25 +4,25 @@ package movierental.refactor;
  * The rental class represents a customer renting a movie.
  */
 public class Rental {
-    private final double _amountOwedByCustomer;
-    private final int _frequentRenterPointsEarnedByCustomer;
-    private final String _figuresToDisplay;
+    private final double _amountOwedForRental;
+    private final int _frequentRenterPointsEarnedForRental;
+    private final String _movieTitleRented;
 
     public Rental(Movie movie, int daysRented) {
-        _amountOwedByCustomer = movie.amountOwedByRentalDaysDuration(daysRented);
-        _frequentRenterPointsEarnedByCustomer = movie.frequentRenterPointsByDaysDuration(daysRented);
-        _figuresToDisplay = movie.getTitle() + "\t" + _amountOwedByCustomer;
+        _amountOwedForRental = movie.amountOwedByRentalDaysDuration(daysRented);
+        _frequentRenterPointsEarnedForRental = movie.frequentRenterPointsByDaysDuration(daysRented);
+        _movieTitleRented = movie.getTitle();
     }
 
-    public double amountOwedByRental() {
-        return this._amountOwedByCustomer;
+    public double amountOwedForRental() {
+        return this._amountOwedForRental;
     }
 
-    public int getFrequentRenterPoints() {
-        return this._frequentRenterPointsEarnedByCustomer;
+    public int frequentRenterPointsEarnedForRental() {
+        return this._frequentRenterPointsEarnedForRental;
     }
 
-    public String displayFigures() {
-        return this._figuresToDisplay;
+    public String movieTitleRented() {
+        return this._movieTitleRented;
     }
 }

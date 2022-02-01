@@ -40,7 +40,31 @@ public class CustomerLegacyTest {
             addRentalForCustomer(customerLegacy, customer, rental);
         }
 
-        assertEquals(customerLegacy.statement(), customer.statement());
+        assertEquals(customerLegacy.statement(), customer.statement(new ConsoleRenderer()));
+    }
+
+    @Test
+    public void refactoredCodeMustDisplayStatementInHtml() {
+        String expected =
+                "" +
+                        "<h1>Rental Record for Bob</h1>\n" +
+                        "<table>" +
+                        "<tr><td>Jaws</td><td>2.0</td></tr>\n" +
+                        "<tr><td>Golden Eye</td><td>3.5</td></tr>\n" +
+                        "<tr><td>Short New</td><td>3.0</td></tr>\n" +
+                        "<tr><td>Long New</td><td>6.0</td></tr>\n" +
+                        "<tr><td>Bambi</td><td>1.5</td></tr>\n" +
+                        "<tr><td>Toy Story</td><td>3.0</td></tr>\n" +
+                        "</table>" +
+                        "<p>Amount owed is <em>19.0</em></p>\n" +
+                        "<p>You earned <em>7</em> frequent renter points</p>";
+
+        Customer customer = new Customer("Bob");
+        for (TestRental rental : rentals) {
+            customer.addRental(getMovieByPriceCode(rental.movieTitle, rental.moviePriceCode), rental.daysRented);
+        }
+
+        assertEquals(expected, customer.statement(new HtmlRenderer()));
     }
 
     private void addRentalForCustomer(CustomerLegacy customerLegacy,
