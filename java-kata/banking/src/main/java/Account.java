@@ -13,6 +13,11 @@ public class Account {
     }
 
     public void withdraw(int amount) {
+        if (this.balance - amount < 0){
+            throw new InsufficientBalanceException();
+        }
+        this.balance -= amount;
+        this.logGateway.log(-amount, this.balance);
     }
 
     public void printStatement() {
