@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class InMemoryLogGateway implements LogAccountGateway {
     private final ArrayList<String> logDb;
@@ -19,5 +20,11 @@ public class InMemoryLogGateway implements LogAccountGateway {
         return this.logDb.isEmpty() ?
                 ""
                 : this.logDb.get(this.logDb.size() - 1);
+    }
+
+    @Override
+    public String getAllLogs() {
+        Collections.reverse(this.logDb);
+        return String.join("\n", logDb);
     }
 }
