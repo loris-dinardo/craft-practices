@@ -1,3 +1,5 @@
+package v1;
+
 public class Account {
     private final LogAccountGateway logGateway;
     private final Output output;
