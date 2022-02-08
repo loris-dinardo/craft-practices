@@ -71,12 +71,5 @@ public class StringCalculatorTest {
             assertEquals(3, sut.add("//|\n1|2"));
             assertEquals(3, sut.add("//sep\n1sep2"));
         }
-
-        @Test
-        void whenAddCalledWithUnspecifiedSeparator_ShouldThrowAnException() {
-            assertThrows(InvalidSeparatorsException.class, () -> sut.add("//;\n1|2"));
-            assertThrows(InvalidSeparatorsException.class, () -> sut.add("//|\n10+2|5"));
-            assertThrows(InvalidSeparatorsException.class, () -> sut.add("//sep\n10,10sep10,30"));
-        }
     }
 }

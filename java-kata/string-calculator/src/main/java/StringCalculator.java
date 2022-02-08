@@ -14,7 +14,6 @@ public class StringCalculator {
     }
 
     private int doSum(String numbers) {
-        this.findInvalidSeparators(this.findNumbers(numbers), this.findSeparators(numbers));
         return Arrays
                 .stream(this.findNumbers(numbers)
                         .split(this.findSeparators(numbers)))
@@ -36,10 +35,5 @@ public class StringCalculator {
             return delimiters;
         }
         return ",|\n";
-    }
-
-    private void findInvalidSeparators(String numbers, String validSeparators) {
-        if (!numbers.matches(validSeparators + "|[0-9]"))
-            throw new InvalidSeparatorsException("Invalid separators found");
     }
 }
