@@ -28,7 +28,7 @@ public class MarsRoverTest {
             "RRRR, N"
     })
     void shouldFaceFinalDirectionWhenRotateRightCommands(String commands, String finalDirection) {
-        assertEquals("0:0:" + finalDirection, new MarsRover("N").execute(commands.split("")));
+        assertEquals("0:0:" + finalDirection, new MarsRover(Direction.NORTH).execute(commands.split("")));
     }
 
     @ParameterizedTest
@@ -40,6 +40,6 @@ public class MarsRoverTest {
             "LLLL, N"
     })
     void shouldFaceFinalDirectionWhenRotateLeftCommands(String commands, String finalDirection) {
-        assertEquals("0:0:" + finalDirection, new MarsRover("N").execute(commands.split("")));
+        assertEquals("0:0:" + finalDirection, new MarsRover(Direction.NORTH).execute(commands.split("")));
     }
 }

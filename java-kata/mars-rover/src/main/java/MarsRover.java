@@ -1,52 +1,21 @@
 public class MarsRover {
-    private String direction;
+    private Direction direction;
 
-    public MarsRover(String facingDirection) {
+    public MarsRover(Direction facingDirection) {
         this.direction = facingDirection;
     }
 
     public String execute(String[] commands) {
         for (String command : commands) {
             if (command.equals("R")) {
-                rotateRight();
+                this.direction = this.direction.turnRight();
             }
             if (command.equals("L")) {
-                rotateLeft();
+                this.direction = this.direction.turnLeft();
             }
         }
 
-        return "0:0:" + this.direction;
-    }
-
-    private void rotateLeft() {
-        switch (this.direction) {
-            case "N":
-                this.direction = "W";
-                break;
-            case "W":
-                this.direction = "S";
-                break;
-            case "S":
-                this.direction = "E";
-                break;
-            case "E":
-                this.direction = "N";
-        }
-    }
-
-    private void rotateRight() {
-        switch (this.direction) {
-            case "N":
-                this.direction = "E";
-                break;
-            case "E":
-                this.direction = "S";
-                break;
-            case "S":
-                this.direction = "W";
-                break;
-            case "W":
-                this.direction = "N";
-        }
+        return "0:0:" + this.direction.getValue();
     }
 }
+
