@@ -30,4 +30,16 @@ public class MarsRoverTest {
     void shouldFaceFinalDirectionWhenRotateRightCommands(String commands, String finalDirection) {
         assertEquals("0:0:" + finalDirection, new MarsRover("N").execute(commands.split("")));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'', N",
+            "L, W",
+            "LL, S",
+            "LLL, E",
+            "LLLL, N"
+    })
+    void shouldFaceFinalDirectionWhenRotateLeftCommands(String commands, String finalDirection) {
+        assertEquals("0:0:" + finalDirection, new MarsRover("N").execute(commands.split("")));
+    }
 }

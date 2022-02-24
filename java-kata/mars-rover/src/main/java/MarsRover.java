@@ -8,14 +8,33 @@ public class MarsRover {
     public String execute(String[] commands) {
         for (String command : commands) {
             if (command.equals("R")) {
-                moveRight();
+                rotateRight();
+            }
+            if (command.equals("L")) {
+                rotateLeft();
             }
         }
 
         return "0:0:" + this.direction;
     }
 
-    private void moveRight() {
+    private void rotateLeft() {
+        switch (this.direction) {
+            case "N":
+                this.direction = "W";
+                break;
+            case "W":
+                this.direction = "S";
+                break;
+            case "S":
+                this.direction = "E";
+                break;
+            case "E":
+                this.direction = "N";
+        }
+    }
+
+    private void rotateRight() {
         switch (this.direction) {
             case "N":
                 this.direction = "E";
