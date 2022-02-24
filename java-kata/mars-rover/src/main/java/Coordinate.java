@@ -8,6 +8,23 @@ public class Coordinate {
         this.y = y;
     }
 
+    public Coordinate moveToDirection(Direction direction) {
+        if (direction == Direction.NORTH) {
+            return new Coordinate(x, y + 1);
+        }
+        if (direction == Direction.EAST) {
+            return new Coordinate(x + 1, y);
+        }
+        if (direction == Direction.SOUTH) {
+            return new Coordinate(x, y - 1);
+        }
+        if (direction == Direction.WEST) {
+            return new Coordinate(x - 1, y);
+        }
+
+        return new Coordinate(x,y);
+    }
+
     public int getX() {
         return x;
     }

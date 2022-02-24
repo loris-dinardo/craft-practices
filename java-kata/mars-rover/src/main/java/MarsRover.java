@@ -22,27 +22,11 @@ public class MarsRover {
                 direction = direction.turnLeft();
             }
             if (command.equals("M")) {
-                coordinate = move();
+                coordinate = coordinate.moveToDirection(direction);
             }
         }
 
         return "" + coordinate.getX() + ":" + coordinate.getY() + ":" + direction.getValue();
-    }
-
-    private Coordinate move() {
-        if (direction == Direction.NORTH) {
-            return new Coordinate(coordinate.getX(), coordinate.getY() + 1);
-        }
-        if (direction == Direction.EAST) {
-            return new Coordinate(coordinate.getX() + 1, coordinate.getY());
-        }
-        if (direction == Direction.SOUTH) {
-            return new Coordinate(coordinate.getX(), coordinate.getY() - 1);
-        }
-        if (direction == Direction.WEST) {
-            return new Coordinate(coordinate.getX() - 1, coordinate.getY());
-        }
-        return coordinate;
     }
 }
 
