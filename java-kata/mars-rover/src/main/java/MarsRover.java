@@ -1,17 +1,18 @@
 public class MarsRover {
     private Direction direction;
     private Coordinate coordinate;
-    private final int MAX_HEIGHT = 10;
-    private final int MAX_WIDTH = 10;
+    private final Grid grid;
 
     public MarsRover() {
-        this.direction = Direction.NORTH;
+        direction = Direction.NORTH;
         coordinate = new Coordinate(0, 0);
+        grid = new Grid(10, 10);
     }
 
     public MarsRover(Direction direction, Coordinate coordinate) {
         this.direction = direction;
         this.coordinate = coordinate;
+        grid = new Grid(10, 10);
     }
 
     public String execute(String[] commands) {
@@ -23,7 +24,7 @@ public class MarsRover {
                 direction = direction.turnLeft();
             }
             if (command.equals("M")) {
-                coordinate = coordinate.moveToDirection(direction, MAX_HEIGHT, MAX_WIDTH);
+                coordinate = grid.nextCoordinateFor(coordinate, direction);
             }
         }
 

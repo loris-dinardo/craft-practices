@@ -8,21 +8,20 @@ public class Coordinate {
         this.y = y;
     }
 
-    public Coordinate moveToDirection(Direction direction, int maxHeight, int maxWidth) {
-        if (direction == Direction.NORTH) {
-            return new Coordinate(x, (y + 1) % maxHeight);
-        }
-        if (direction == Direction.EAST) {
-            return new Coordinate((x + 1) % maxWidth, y);
-        }
-        if (direction == Direction.SOUTH) {
-            return new Coordinate(x, y == 0 ? maxHeight - 1 : (y - 1));
-        }
-        if (direction == Direction.WEST) {
-            return new Coordinate(x > 0 ? x - 1 : maxWidth - 1, y);
-        }
+    public Coordinate increaseX(int max) {
+        return new Coordinate((x + 1) % max, y);
+    }
 
-        return new Coordinate(x, y);
+    public Coordinate decreaseX(int max) {
+        return new Coordinate(x > 0 ? x - 1 : max - 1, y);
+    }
+
+    public Coordinate increaseY(int max) {
+        return new Coordinate(x, (y + 1) % max);
+    }
+
+    public Coordinate decreaseY(int max) {
+        return new Coordinate(x, y == 0 ? max - 1 : (y - 1));
     }
 
     public int getX() {
@@ -31,5 +30,9 @@ public class Coordinate {
 
     public int getY() {
         return y;
+    }
+
+    public Coordinate stayInPlace() {
+        return new Coordinate(x, y);
     }
 }
