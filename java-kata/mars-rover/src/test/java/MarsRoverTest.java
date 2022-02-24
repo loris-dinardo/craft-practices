@@ -1,6 +1,5 @@
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -55,7 +54,24 @@ public class MarsRoverTest {
             "WEST, 5, 0, M, 4:0:W",
             "WEST, 5, 0, MMM, 2:0:W",
     })
-    void shouldBeAtFinalPositionAndDirectionWhenMovingCommands(Direction direction, int x, int y, String commands, String finalPositionAndDirection) {
-        assertEquals(finalPositionAndDirection, new MarsRover(direction, new Coordinate(x,y)).execute(commands.split("")));
+    void shouldBeAtFinalPositionAndDirectionWhenMovingCommands(Direction direction, int x, int y, String commands,
+                                                               String finalPositionAndDirection) {
+        assertEquals(finalPositionAndDirection,
+                new MarsRover(direction, new Coordinate(x, y)).execute(commands.split("")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "NORTH, 0, 9, M, 0:0:N",
+            "EAST, 9, 0, M, 0:0:E",
+            "SOUTH, 0, 0, M, 0:9:S",
+            "WEST, 0, 0, M, 9:0:W",
+    })
+    void shouldWrapAroundTheMapAndBeAtFinalPositionAndDirectionWhenMovingCommands(Direction direction,
+                                                                                  int x, int y,
+                                                                                  String commands,
+                                                                                  String finalPositionAndDirection) {
+        assertEquals(finalPositionAndDirection,
+                new MarsRover(direction, new Coordinate(x, y)).execute(commands.split("")));
     }
 }

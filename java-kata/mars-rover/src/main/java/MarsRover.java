@@ -1,7 +1,8 @@
 public class MarsRover {
     private Direction direction;
     private Coordinate coordinate;
-
+    private final int MAX_HEIGHT = 10;
+    private final int MAX_WIDTH = 10;
 
     public MarsRover() {
         this.direction = Direction.NORTH;
@@ -22,7 +23,7 @@ public class MarsRover {
                 direction = direction.turnLeft();
             }
             if (command.equals("M")) {
-                coordinate = coordinate.moveToDirection(direction);
+                coordinate = coordinate.moveToDirection(direction, MAX_HEIGHT, MAX_WIDTH);
             }
         }
 
