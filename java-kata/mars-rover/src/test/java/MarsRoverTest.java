@@ -1,5 +1,6 @@
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +29,7 @@ public class MarsRoverTest {
             "RRRR, N"
     })
     void shouldFaceFinalDirectionWhenRotateRightCommands(String commands, String finalDirection) {
-        assertEquals("0:0:" + finalDirection, new MarsRover(Direction.NORTH).execute(commands.split("")));
+        assertEquals("0:0:" + finalDirection, new MarsRover().execute(commands.split("")));
     }
 
     @ParameterizedTest
@@ -40,6 +41,21 @@ public class MarsRoverTest {
             "LLLL, N"
     })
     void shouldFaceFinalDirectionWhenRotateLeftCommands(String commands, String finalDirection) {
-        assertEquals("0:0:" + finalDirection, new MarsRover(Direction.NORTH).execute(commands.split("")));
+        assertEquals("0:0:" + finalDirection, new MarsRover().execute(commands.split("")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "NORTH, 0, 0, M, 0:1:N",
+            "NORTH, 0, 0, MMM, 0:3:N",
+            "EAST, 0, 0, M, 1:0:E",
+            "EAST, 0, 0, MMM, 3:0:E",
+            "SOUTH, 0, 5, M, 0:4:S",
+            "SOUTH, 0, 5, MMM, 0:2:S",
+            "WEST, 5, 0, M, 4:0:W",
+            "WEST, 5, 0, MMM, 2:0:W",
+    })
+    void shouldBeAtFinalPositionAndDirectionWhenMovingCommands(Direction direction, int x, int y, String commands, String finalPositionAndDirection) {
+        assertEquals(finalPositionAndDirection, new MarsRover(direction, new Coordinate(x,y)).execute(commands.split("")));
     }
 }
