@@ -23,13 +23,36 @@ public class AccountTest {
             String existingTransactions,
             String expectedDisplay
     ) {
-        setupAccountWithExistingTransactions(existingTransactions);
-        sut.printStatement();
-        assertEquals(expectedDisplay, ((InMemoryOutputGateway) outputGateway).printed());
+        setupAccountWithTransactions(existingTransactions);
+        assertResult(expectedDisplay);
     }
 
-    private void setupAccountWithExistingTransactions(String existingTransactions) {
+    @ParameterizedTest
+    @CsvSource({
+            "1000, 01-01-2022, 'DATE | AMOUNT | BALANCE\n01-01-2022 | 1000 | 1000'",
+    })
+    void shouldHaveTheCorrectAmountWhenClientMakesDeposit(
+            int amount,
+            String date,
+            String expectedDisplay
+    ) {
+        setupEmptyAccount();
+        sut.deposit(amount, date);
+        assertResult(expectedDisplay);
+    }
+
+    private void setupEmptyAccount() {
+        outputGateway = new InMemoryOutputGateway();
+        sut = new Account(outputGateway);
+    }
+
+    private void setupAccountWithTransactions(String existingTransactions) {
         outputGateway = new InMemoryOutputGateway();
         sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
+    }
+
+    private void assertResult(String expectedResult){
+        sut.printStatement();
+        assertEquals(expectedResult, ((InMemoryOutputGateway) outputGateway).printed());
     }
 }

@@ -5,19 +5,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class Account {
+    private int balance;
     private final List<String> transactions;
     private final OutputGateway outputGateway;
 
     public Account(OutputGateway outputGateway) {
-        this(Collections.emptyList(), outputGateway);
+        this(new ArrayList<>(), outputGateway);
     }
 
-    public Account(List<String> existingTransaction, OutputGateway outputGateway) {
-        this.transactions = existingTransaction;
+    public Account(List<String> existingTransactions, OutputGateway outputGateway) {
+        this.transactions = existingTransactions;
         this.outputGateway = outputGateway;
     }
 
     public void deposit(int amount, String date) {
+        balance += amount;
+        transactions.add(date + " | " + amount + " | " + balance);
     }
 
     public void withdraw(int amount, String date) {
