@@ -1,6 +1,8 @@
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MarsRoverTest {
@@ -16,7 +18,7 @@ public class MarsRoverTest {
      * 2:1:N.
      * 7) The rover wraps around if it reaches the end of the grid.
      * 8) The grid may have obstacles. If a given sequence of commands encounters an obstacle, the rover moves up to
-     * the last possible point and reports the obstacle e.g. 0:2:2:N
+     * the last possible point e.g. 0:2:N if obstacle at (0,3)
      */
 
     @ParameterizedTest
@@ -57,7 +59,7 @@ public class MarsRoverTest {
     void shouldBeAtFinalPositionAndDirectionWhenMovingCommands(Direction direction, int x, int y, String commands,
                                                                String finalPositionAndDirection) {
         assertEquals(finalPositionAndDirection,
-                new MarsRover(direction, new Coordinate(x, y)).execute(commands.split("")));
+                new MarsRover(direction, new Coordinates(x, y)).execute(commands.split("")));
     }
 
     @ParameterizedTest
@@ -72,6 +74,22 @@ public class MarsRoverTest {
                                                                                   String commands,
                                                                                   String finalPositionAndDirection) {
         assertEquals(finalPositionAndDirection,
-                new MarsRover(direction, new Coordinate(x, y)).execute(commands.split("")));
+                new MarsRover(direction, new Coordinates(x, y)).execute(commands.split("")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "NORTH, 5, 2, MMMM, 5:4:N",
+            "EAST, 2, 5, MMMM, 4:5:E",
+            "SOUTH, 5, 8, MMMM, 5:6:S",
+            "WEST, 8, 5, MMMM, 6:5:W",
+    })
+    void shouldStopBeforeTheObstacleInTheMiddleOfTheMapWhenMovingCommands(Direction direction,
+                                                                          int x, int y,
+                                                                          String commands,
+                                                                          String finalPositionAndDirection) {
+        Grid grid = Grid.withLimitAndObstacles(10, 10, List.of(new Coordinates(5, 5)));
+        assertEquals(finalPositionAndDirection,
+                new MarsRover(direction, new Coordinates(x, y), grid).execute(commands.split("")));
     }
 }

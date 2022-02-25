@@ -1,18 +1,20 @@
 public class MarsRover {
     private Direction direction;
-    private Coordinate coordinate;
+    private Coordinates coordinates;
     private final Grid grid;
 
     public MarsRover() {
-        direction = Direction.NORTH;
-        coordinate = new Coordinate(0, 0);
-        grid = new Grid(10, 10);
+        this(Direction.NORTH, new Coordinates(0, 0));
     }
 
-    public MarsRover(Direction direction, Coordinate coordinate) {
+    public MarsRover(Direction direction, Coordinates coordinates) {
+        this(direction, coordinates, Grid.defaultGrid());
+    }
+
+    public MarsRover(Direction direction, Coordinates coordinates, Grid grid) {
         this.direction = direction;
-        this.coordinate = coordinate;
-        grid = new Grid(10, 10);
+        this.coordinates = coordinates;
+        this.grid = grid;
     }
 
     public String execute(String[] commands) {
@@ -24,11 +26,11 @@ public class MarsRover {
                 direction = direction.turnLeft();
             }
             if (command.equals("M")) {
-                coordinate = grid.nextCoordinateFor(coordinate, direction);
+                coordinates = grid.nextCoordinateFor(coordinates, direction);
             }
         }
 
-        return "" + coordinate.getX() + ":" + coordinate.getY() + ":" + direction.getValue();
+        return "" + coordinates.getX() + ":" + coordinates.getY() + ":" + direction.getValue();
     }
 }
 
