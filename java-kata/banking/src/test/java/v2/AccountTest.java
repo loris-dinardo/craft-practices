@@ -29,39 +29,66 @@ public class AccountTest {
         assertResult(expectedDisplay);
     }
 
+    private void setupAccountWithTransactions(String existingTransactions) {
+        outputGateway = new InMemoryOutputGateway();
+        sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
+    }
+
     @ParameterizedTest
     @CsvSource({
-            "'1000%01-01-2022', " +
+            "0, '1000%01-01-2022', " +
                     "'DATE | AMOUNT | BALANCE\n" +
                     "01-01-2022 | 1000 | 1000'",
-            "'1000%01-01-2022#1000%02-01-2022', " +
+            "0, '1000%01-01-2022#1000%02-01-2022', " +
                     "'DATE | AMOUNT | BALANCE\n" +
                     "02-01-2022 | 1000 | 2000\n" +
                     "01-01-2022 | 1000 | 1000'",
-            "'1000%01-01-2022#1000%02-01-2022#500%03-01-2022', " +
+            "0, '1000%01-01-2022#1000%02-01-2022#500%03-01-2022', " +
                     "'DATE | AMOUNT | BALANCE\n" +
                     "03-01-2022 | 500 | 2500\n" +
                     "02-01-2022 | 1000 | 2000\n" +
                     "01-01-2022 | 1000 | 1000'",
     })
-    void shouldHaveTheCorrectAmountWhenClientMakesDeposit(
+    void shouldHaveTheCorrectAmountWhenClientHasInitialBalanceAndMakesDeposit(
+            int initialBalance,
             String amountsAndDates,
             String expectedDisplay
     ) {
-        setupEmptyAccount();
+        setupAccountWithInitialBalance(initialBalance);
         getAmountsAndDatesFromParam(amountsAndDates)
                 .forEach(amountAndDate -> sut.deposit(amountAndDate.amount, amountAndDate.date));
         assertResult(expectedDisplay);
     }
 
-    private void setupEmptyAccount() {
-        outputGateway = new InMemoryOutputGateway();
-        sut = new Account(outputGateway);
+    @ParameterizedTest
+    @CsvSource({
+            "1000, '100%01-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "01-01-2022 | -100 | 900'",
+            "1000, '100%01-01-2022#200%02-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "02-01-2022 | -200 | 700\n" +
+                    "01-01-2022 | -100 | 900'",
+            "1000, '100%01-01-2022#200%02-01-2022#300%03-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "03-01-2022 | -300 | 400\n" +
+                    "02-01-2022 | -200 | 700\n" +
+                    "01-01-2022 | -100 | 900'",
+    })
+    void shouldHaveTheCorrectAmountWhenClientHasInitialBalanceAndMakesWithdraw(
+            int initialBalance,
+            String amountsAndDates,
+            String expectedDisplay
+    ) {
+        setupAccountWithInitialBalance(initialBalance);
+        getAmountsAndDatesFromParam(amountsAndDates)
+                .forEach(amountAndDate -> sut.withdraw(amountAndDate.amount, amountAndDate.date));
+        assertResult(expectedDisplay);
     }
 
-    private void setupAccountWithTransactions(String existingTransactions) {
+    private void setupAccountWithInitialBalance(int initialBalance) {
         outputGateway = new InMemoryOutputGateway();
-        sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
+        sut = new Account(initialBalance, outputGateway);
     }
 
     static class AmountAndDate {

@@ -9,8 +9,9 @@ public class Account {
     private final List<String> transactions;
     private final OutputGateway outputGateway;
 
-    public Account(OutputGateway outputGateway) {
+    public Account(int initialBalance, OutputGateway outputGateway) {
         this(new ArrayList<>(), outputGateway);
+        this.balance = initialBalance;
     }
 
     public Account(List<String> existingTransactions, OutputGateway outputGateway) {
@@ -24,6 +25,8 @@ public class Account {
     }
 
     public void withdraw(int amount, String date) {
+        balance -= amount;
+        transactions.add(date + " | -" + amount + " | " + balance);
     }
 
     public void printStatement() {
