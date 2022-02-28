@@ -3,7 +3,9 @@ package v2;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,15 +31,26 @@ public class AccountTest {
 
     @ParameterizedTest
     @CsvSource({
-            "1000, 01-01-2022, 'DATE | AMOUNT | BALANCE\n01-01-2022 | 1000 | 1000'",
+            "'1000%01-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "01-01-2022 | 1000 | 1000'",
+            "'1000%01-01-2022#1000%02-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "02-01-2022 | 1000 | 2000\n" +
+                    "01-01-2022 | 1000 | 1000'",
+            "'1000%01-01-2022#1000%02-01-2022#500%03-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "03-01-2022 | 500 | 2500\n" +
+                    "02-01-2022 | 1000 | 2000\n" +
+                    "01-01-2022 | 1000 | 1000'",
     })
     void shouldHaveTheCorrectAmountWhenClientMakesDeposit(
-            int amount,
-            String date,
+            String amountsAndDates,
             String expectedDisplay
     ) {
         setupEmptyAccount();
-        sut.deposit(amount, date);
+        getAmountsAndDatesFromParam(amountsAndDates)
+                .forEach(amountAndDate -> sut.deposit(amountAndDate.amount, amountAndDate.date));
         assertResult(expectedDisplay);
     }
 
@@ -51,7 +64,25 @@ public class AccountTest {
         sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
     }
 
-    private void assertResult(String expectedResult){
+    static class AmountAndDate {
+        public int amount;
+        public String date;
+
+        public AmountAndDate(int amount, String date) {
+            this.amount = amount;
+            this.date = date;
+        }
+    }
+
+    private List<AmountAndDate> getAmountsAndDatesFromParam(String param) {
+        String[] data = param.split("#");
+        return Arrays.stream(data).map(amountAndDate -> {
+            String[] values = amountAndDate.split("%");
+            return new AmountAndDate(Integer.parseInt(values[0]), values[1]);
+        }).collect(Collectors.toList());
+    }
+
+    private void assertResult(String expectedResult) {
         sut.printStatement();
         assertEquals(expectedResult, ((InMemoryOutputGateway) outputGateway).printed());
     }
