@@ -27,7 +27,7 @@ public class GameOfLifeTest {
                     "ALIVE ALIVE ALIVE\n" +
                     "ALIVE ALIVE ALIVE]'"
     })
-    void beFilledWithRandomCellStatusAtGameBeginning(
+    void worldShouldBeFilledWithRandomCellStatusAtGameBeginning(
             int boardSizeX,
             int boardSizeY,
             CellState definedRandomResult,
@@ -39,6 +39,28 @@ public class GameOfLifeTest {
 
         // Act
         new World(boardSizeX, boardSizeY, stateGenerator, generationBoard);
+
+        // Assert
+        assertEquals(expectedCellStates, generationBoard.printed());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,1, 'ALIVE', '[DEAD]'",
+    })
+    void livingCellWithLessThanTwoNeighborsShouldDieOnNextGeneration(
+            int boardSizeX,
+            int boardSizeY,
+            String definedRandomResultChain,
+            String expectedCellStates
+    ) {
+        // Arrange
+        RandomCellStateGenerator stateGenerator = new PredictableRandomCellStateGenerator(definedRandomResultChain);
+        ConsoleOutputGenerationBoard generationBoard = new ConsoleOutputGenerationBoard();
+
+        // Act
+        World sut = new World(boardSizeX, boardSizeY, stateGenerator, generationBoard);
+        sut.nextGeneration();
 
         // Assert
         assertEquals(expectedCellStates, generationBoard.printed());
