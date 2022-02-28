@@ -3,9 +3,7 @@ package v2;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,11 +27,6 @@ public class AccountTest {
         assertResult(expectedDisplay);
     }
 
-    private void setupAccountWithTransactions(String existingTransactions) {
-        outputGateway = new InMemoryOutputGateway();
-        sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
-    }
-
     @ParameterizedTest
     @CsvSource({
             "0, '1000%01-01-2022', " +
@@ -55,7 +48,7 @@ public class AccountTest {
             String expectedDisplay
     ) {
         setupAccountWithInitialBalance(initialBalance);
-        getAmountsAndDatesFromParam(amountsAndDates)
+        AmountAndDate.fromParam(amountsAndDates)
                 .forEach(amountAndDate -> sut.deposit(amountAndDate.amount, amountAndDate.date));
         assertResult(expectedDisplay);
     }
@@ -81,32 +74,46 @@ public class AccountTest {
             String expectedDisplay
     ) {
         setupAccountWithInitialBalance(initialBalance);
-        getAmountsAndDatesFromParam(amountsAndDates)
+        AmountAndDate.fromParam(amountsAndDates)
                 .forEach(amountAndDate -> sut.withdraw(amountAndDate.amount, amountAndDate.date));
         assertResult(expectedDisplay);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0, '1000%01-01-2022#-100%02-01-2022#500%03-01-2022', " +
+                    "'DATE | AMOUNT | BALANCE\n" +
+                    "03-01-2022 | 500 | 1400\n" +
+                    "02-01-2022 | -100 | 900\n" +
+                    "01-01-2022 | 1000 | 1000'",
+    })
+    void shouldHaveTheCorrectAmountWhenClientHasInitialBalanceAndMakesMultipleDepositsAndWithdraws(
+            int initialBalance,
+            String amountsAndDates,
+            String expectedDisplay
+    ) {
+        setupAccountWithInitialBalance(initialBalance);
+        AmountAndDate.fromParam(amountsAndDates)
+                .forEach(
+                        amountAndDate -> {
+                            if (amountAndDate.operationType == OperationType.DEPOSIT) {
+                                sut.deposit(amountAndDate.amount, amountAndDate.date);
+                            } else {
+                                sut.withdraw(amountAndDate.amount, amountAndDate.date);
+                            }
+                        }
+                );
+        assertResult(expectedDisplay);
+    }
+
+    private void setupAccountWithTransactions(String existingTransactions) {
+        outputGateway = new InMemoryOutputGateway();
+        sut = new Account(List.of(existingTransactions.split("#")), outputGateway);
     }
 
     private void setupAccountWithInitialBalance(int initialBalance) {
         outputGateway = new InMemoryOutputGateway();
         sut = new Account(initialBalance, outputGateway);
-    }
-
-    static class AmountAndDate {
-        public int amount;
-        public String date;
-
-        public AmountAndDate(int amount, String date) {
-            this.amount = amount;
-            this.date = date;
-        }
-    }
-
-    private List<AmountAndDate> getAmountsAndDatesFromParam(String param) {
-        String[] data = param.split("#");
-        return Arrays.stream(data).map(amountAndDate -> {
-            String[] values = amountAndDate.split("%");
-            return new AmountAndDate(Integer.parseInt(values[0]), values[1]);
-        }).collect(Collectors.toList());
     }
 
     private void assertResult(String expectedResult) {
