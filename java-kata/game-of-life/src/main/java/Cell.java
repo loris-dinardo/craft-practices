@@ -9,8 +9,10 @@ public class Cell {
         return state;
     }
 
-    public Cell nextStateWhenNeighborsAliveAre(int aliveNeighbors) {
-        if (aliveNeighbors < 2)
+    public Cell nextGenerationStateWhenNumberOfNeighborsAliveIs(int aliveNeighbors) {
+        if (state == CellState.DEAD && aliveNeighbors == 3)
+            return new Cell(CellState.ALIVE);
+        if (aliveNeighbors < 2 | aliveNeighbors > 3)
             return new Cell(CellState.DEAD);
         return new Cell(state);
     }

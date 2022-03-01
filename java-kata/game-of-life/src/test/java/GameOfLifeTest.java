@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -8,61 +9,74 @@ public class GameOfLifeTest {
      * Rules
      * 1) Game of Life board is a square with a size (e.g. 10x10)
      * 2) Cells within the board are randomly given a state (Dead or Alive) at the beginning
-     * 3) Cells outside the board are given an unknown state
-     * 4) The next state calculation of cell is defined by these rules :
-     * * 4.1) A living cell with less than two neighbors alive => dies
-     * * 4.2) A living cell with two or three neighbors alive => survives
-     * * 4.3) A living cell with more than three neighbors alive => dies
-     * * 4.4) A dead cell with exactly three neighbors alive => becomes alive
-     * * 4.5) Unknown cell are ignored
-     * 5) The previous rules are applied to all cells after each generation
+     * 3) The next state calculation of cell is defined by these rules :
+     * * 3.1) A living cell with less than two neighbors alive => dies
+     * * 3.2) A living cell with two or three neighbors alive => survives
+     * * 3.3) A living cell with more than three neighbors alive => dies
+     * * 3.4) A dead cell with exactly three neighbors alive => becomes alive
+     * * 3.5) Unknown cell are ignored
+     * 4) The previous rules are applied to all cells after each generation
      */
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,1, UNKNOWN, '[UNKNOWN]'",
-            "2,2, DEAD, '[DEAD DEAD\n" +
-                    "DEAD DEAD]'",
-            "3,3, ALIVE, '[ALIVE ALIVE ALIVE\n" +
-                    "ALIVE ALIVE ALIVE\n" +
-                    "ALIVE ALIVE ALIVE]'"
-    })
-    void worldShouldBeFilledWithRandomCellStatusAtGameBeginning(
-            int boardSizeX,
-            int boardSizeY,
-            CellState definedRandomResult,
-            String expectedCellStates
-    ) {
-        // Arrange
-        RandomCellStateGenerator stateGenerator = new PredictableRandomCellStateGenerator(definedRandomResult);
-        ConsoleOutputGenerationBoard generationBoard = new ConsoleOutputGenerationBoard();
+    @Nested
+    class CellShouldTest {
+        @ParameterizedTest
+        @CsvSource({
+                "ALIVE, 0, DEAD",
+                "ALIVE, 1, DEAD",
+                "ALIVE, 2, ALIVE",
+                "ALIVE, 3, ALIVE",
+                "ALIVE, 4, DEAD",
+                "ALIVE, 8, DEAD",
+                "DEAD, 0, DEAD",
+                "DEAD, 1, DEAD",
+                "DEAD, 2, DEAD",
+                "DEAD, 3, ALIVE",
+                "DEAD, 4, DEAD",
+                "DEAD, 8, DEAD",
+        })
+        void haveExpectedStateOnNextGenerationWhenSpecificNumberOfNeighbors(
+                CellState initialCellState,
+                int numberOfNeighborsAlive,
+                CellState expectedCellState
+        ) {
+            // Arrange
+            Cell sut = new Cell(initialCellState);
 
-        // Act
-        new World(boardSizeX, boardSizeY, stateGenerator, generationBoard);
+            // Act
+            Cell nextGenerationCell = sut.nextGenerationStateWhenNumberOfNeighborsAliveIs(numberOfNeighborsAlive);
 
-        // Assert
-        assertEquals(expectedCellStates, generationBoard.printed());
+            // Assert
+            assertEquals(expectedCellState, nextGenerationCell.getState());
+        }
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,1, 'ALIVE', '[DEAD]'",
-    })
-    void livingCellWithLessThanTwoNeighborsShouldDieOnNextGeneration(
-            int boardSizeX,
-            int boardSizeY,
-            String definedRandomResultChain,
-            String expectedCellStates
-    ) {
-        // Arrange
-        RandomCellStateGenerator stateGenerator = new PredictableRandomCellStateGenerator(definedRandomResultChain);
-        ConsoleOutputGenerationBoard generationBoard = new ConsoleOutputGenerationBoard();
+    @Nested
+    class WorldBoardShouldTest {
+        @ParameterizedTest
+        @CsvSource({
+                "1,1, ALIVE, '[ALIVE]'",
+                "2,2, DEAD#ALIVE, '[DEAD ALIVE\n" +
+                        "DEAD ALIVE]'",
+                "3,3, ALIVE#ALIVE#DEAD#DEAD, '[ALIVE ALIVE DEAD\n" +
+                        "DEAD ALIVE ALIVE\n" +
+                        "DEAD DEAD ALIVE]'"
+        })
+        void beFilledWithRandomCellStatusAtGameBeginning(
+                int boardSizeX,
+                int boardSizeY,
+                String definedRandomResultChain,
+                String expectedCellStates
+        ) {
+            // Arrange
+            RandomCellStateGenerator stateGenerator = new PredictableRandomCellStateGenerator(definedRandomResultChain);
+            ConsoleOutputGenerationBoard outputGenerationBoard = new ConsoleOutputGenerationBoard();
 
-        // Act
-        World sut = new World(boardSizeX, boardSizeY, stateGenerator, generationBoard);
-        sut.nextGeneration();
+            // Act
+            new World(boardSizeX, boardSizeY, stateGenerator, outputGenerationBoard);
 
-        // Assert
-        assertEquals(expectedCellStates, generationBoard.printed());
+            // Assert
+            assertEquals(expectedCellStates, outputGenerationBoard.printed());
+        }
     }
 }

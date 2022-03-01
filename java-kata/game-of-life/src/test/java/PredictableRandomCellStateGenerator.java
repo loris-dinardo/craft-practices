@@ -6,10 +6,6 @@ public class PredictableRandomCellStateGenerator implements RandomCellStateGener
     private final List<CellState> sequence;
     private int index = 0;
 
-    public PredictableRandomCellStateGenerator(CellState definedRandomResult) {
-        sequence = List.of(definedRandomResult);
-    }
-
     public PredictableRandomCellStateGenerator(String definedRandomResultSequence) {
         this.sequence =
                 Arrays.stream(definedRandomResultSequence.split("#"))

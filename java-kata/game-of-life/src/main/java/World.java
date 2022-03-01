@@ -22,7 +22,7 @@ public class World {
         Cell[][] nextWorldGrid = worldGrid.clone();
         for (int i = 0; i < worldGrid.length; i++) {
             for (int j = 0; j < worldGrid[i].length; j++) {
-                nextWorldGrid[i][j] = worldGrid[i][j].nextStateWhenNeighborsAliveAre(getAliveNeighbors(i, j));
+                nextWorldGrid[i][j] = worldGrid[i][j].nextGenerationStateWhenNumberOfNeighborsAliveIs(getAliveNeighbors(i, j));
             }
         }
         this.outputGenerationBoard.outputBoard(nextWorldGrid);
