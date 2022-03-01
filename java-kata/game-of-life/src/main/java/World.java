@@ -1,50 +1,45 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class World {
     private final Cell[][] worldGrid;
     private final OutputGenerationBoard outputGenerationBoard;
 
-    public World(int sizeX, int sizeY, RandomCellStateGenerator stateGenerator,
-                 OutputGenerationBoard outputGenerationBoard) {
-        this.worldGrid = new Cell[sizeX][sizeY];
+    public World(Cell[][] initialCells, OutputGenerationBoard outputGenerationBoard) {
         this.outputGenerationBoard = outputGenerationBoard;
-        initWorldBoard(stateGenerator);
+        this.worldGrid = initialCells;
     }
 
-    private void initWorldBoard(RandomCellStateGenerator stateGenerator) {
-        for (Cell[] cellRow : worldGrid) {
-            for (int i = 0; i < cellRow.length; i++) {
-                cellRow[i] = new Cell(stateGenerator.getNextState());
+    public void nextGeneration() {
+        notifyCellsAboutTheirNeighbors();
+        for (int i = 0; i < worldGrid.length; i++) {
+            for (int j = 0; j < worldGrid[i].length; j++) {
+                worldGrid[i][j] = worldGrid[i][j].nextGenerationCell();
             }
         }
         this.outputGenerationBoard.outputBoard(worldGrid);
     }
 
-    public void nextGeneration() {
-        Cell[][] nextWorldGrid = worldGrid.clone();
-        for (int i = 0; i < worldGrid.length; i++) {
-            for (int j = 0; j < worldGrid[i].length; j++) {
-                nextWorldGrid[i][j] = worldGrid[i][j].nextGenerationStateWhenNumberOfNeighborsAliveIs(getAliveNeighbors(i, j));
+    private void notifyCellsAboutTheirNeighbors() {
+        for (int row = 0; row < worldGrid.length; row++) {
+            for (int column = 0; column < worldGrid[row].length; column++) {
+                worldGrid[row][column].updateNeighbors(getNeighborsOfCell(row, column));
             }
         }
-        this.outputGenerationBoard.outputBoard(nextWorldGrid);
     }
 
-    private int getAliveNeighbors(int row, int column) {
-        int aliveNeighbors = 0;
-        for (int i = row - 1; i < row + 2; i++) {
-            for (int j = column - 1; j < column + 2; j++) {
-                if (neighborIsAlive(i, j))
-                    aliveNeighbors++;
+    private List<Cell> getNeighborsOfCell(int row, int column) {
+        List<Cell> result = new ArrayList<>();
+        for (int rowTmp = row - 1; rowTmp <= row + 1; rowTmp++) {
+            for (int columnTmp = column - 1; columnTmp <= column + 1; columnTmp++) {
+                if (rowTmp >= 0 && rowTmp < worldGrid.length) {
+                    if (columnTmp >= 0 && columnTmp < worldGrid.length) {
+                        if (rowTmp != row | columnTmp != column)
+                            result.add(worldGrid[rowTmp][columnTmp]);
+                    }
+                }
             }
         }
-        return aliveNeighbors;
-    }
-
-    private boolean neighborIsAlive(int row, int column) {
-        if (row >= 0 && row < worldGrid.length) {
-            if (column >= 0 && column < worldGrid[row].length) {
-                return worldGrid[row][column].getState() == CellState.ALIVE;
-            }
-        }
-        return false;
+        return result;
     }
 }

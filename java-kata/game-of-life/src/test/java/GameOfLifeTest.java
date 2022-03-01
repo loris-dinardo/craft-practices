@@ -2,6 +2,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameOfLifeTest {
@@ -14,7 +18,6 @@ public class GameOfLifeTest {
      * * 3.2) A living cell with two or three neighbors alive => survives
      * * 3.3) A living cell with more than three neighbors alive => dies
      * * 3.4) A dead cell with exactly three neighbors alive => becomes alive
-     * * 3.5) Unknown cell are ignored
      * 4) The previous rules are applied to all cells after each generation
      */
 
@@ -22,32 +25,32 @@ public class GameOfLifeTest {
     class CellShouldTest {
         @ParameterizedTest
         @CsvSource({
-                "ALIVE, 0, DEAD",
-                "ALIVE, 1, DEAD",
-                "ALIVE, 2, ALIVE",
-                "ALIVE, 3, ALIVE",
-                "ALIVE, 4, DEAD",
-                "ALIVE, 8, DEAD",
-                "DEAD, 0, DEAD",
-                "DEAD, 1, DEAD",
-                "DEAD, 2, DEAD",
-                "DEAD, 3, ALIVE",
-                "DEAD, 4, DEAD",
-                "DEAD, 8, DEAD",
+                // Min number of neighbors is 3 when cell is in one of the corners
+                "DEAD#DEAD#DEAD, ALIVE, DEAD",                                   // Rule 3.1
+                "ALIVE#DEAD#DEAD, ALIVE, DEAD",                                  // Rule 3.1
+                "ALIVE#ALIVE#DEAD, ALIVE, ALIVE",                                // Rule 3.1
+                "ALIVE#ALIVE#ALIVE, ALIVE, ALIVE",                               // Rule 3.2
+                "ALIVE#ALIVE#ALIVE#ALIVE, ALIVE, DEAD",                          // Rule 3.3
+                // Max number of neighbors is 8
+                "ALIVE#ALIVE#ALIVE#ALIVE#ALIVE#ALIVE#ALIVE#ALIVE, ALIVE, DEAD",  // Rule 3.3
+                "DEAD#DEAD#DEAD, DEAD, DEAD",                                    // Rule 3.4
+                "ALIVE#DEAD#DEAD, DEAD, DEAD",                                   // Rule 3.4
+                "ALIVE#ALIVE#DEAD, DEAD, DEAD",                                  // Rule 3.4
+                "ALIVE#ALIVE#ALIVE, DEAD, ALIVE",                                // Rule 3.4
         })
-        void haveExpectedStateOnNextGenerationWhenSpecificNumberOfNeighbors(
+        void beAbleToDefineTheNextGenerationStateAccordingToTheNumberOfAliveNeighbors(
+                String neighborsCellStates,
                 CellState initialCellState,
-                int numberOfNeighborsAlive,
                 CellState expectedCellState
         ) {
             // Arrange
-            Cell sut = new Cell(initialCellState);
+            List<Cell> neighbors = Arrays.stream(neighborsCellStates.split("#"))
+                    .map(strState -> new Cell(CellState.valueOf(strState))).collect(Collectors.toList());
+            Cell sut = new Cell(initialCellState, neighbors);
 
             // Act
-            Cell nextGenerationCell = sut.nextGenerationStateWhenNumberOfNeighborsAliveIs(numberOfNeighborsAlive);
-
             // Assert
-            assertEquals(expectedCellState, nextGenerationCell.getState());
+            assertEquals(expectedCellState, sut.nextGenerationCell().getState());
         }
     }
 
@@ -55,7 +58,46 @@ public class GameOfLifeTest {
     class WorldBoardShouldTest {
         @ParameterizedTest
         @CsvSource({
-                "1,1, ALIVE, '[ALIVE]'",
+                "2, 'DEAD#DEAD%DEAD#DEAD', " +
+                        "'[DEAD DEAD\n" +
+                        "DEAD DEAD]'",
+                "2, 'ALIVE#DEAD%DEAD#DEAD', " +
+                        "'[DEAD DEAD\n" +
+                        "DEAD DEAD]'",
+                "2, 'ALIVE#ALIVE%DEAD#DEAD', " +
+                        "'[DEAD DEAD\n" +
+                        "DEAD DEAD]'",
+                "2, 'ALIVE#ALIVE%ALIVE#DEAD', " +
+                        "'[ALIVE ALIVE\n" +
+                        "ALIVE ALIVE]'",
+        })
+        void defineNextGenerationCellsFromCurrentCells(
+                int worldSize,
+                String initialCellStates,
+                String expectedCellStates) {
+
+            // Arrange
+            ConsoleOutputGenerationBoard outputGenerationBoard = new ConsoleOutputGenerationBoard();
+            Cell[][] initialCells = new Cell[worldSize][worldSize];
+            String[] rows = initialCellStates.split("%");
+            for (int i = 0; i < rows.length; i++) {
+                String[] columns = rows[i].split("#");
+                for (int j = 0; j < columns.length; j++) {
+                    initialCells[i][j] = new Cell(CellState.valueOf(columns[j]));
+                }
+            }
+
+            // Act
+            World sut = new World(initialCells, outputGenerationBoard);
+            sut.nextGeneration();
+
+            // Assert
+            assertEquals(expectedCellStates, outputGenerationBoard.printed());
+        }
+
+        /*
+        @ParameterizedTest
+        @CsvSource({
                 "2,2, DEAD#ALIVE, '[DEAD ALIVE\n" +
                         "DEAD ALIVE]'",
                 "3,3, ALIVE#ALIVE#DEAD#DEAD, '[ALIVE ALIVE DEAD\n" +
@@ -78,5 +120,6 @@ public class GameOfLifeTest {
             // Assert
             assertEquals(expectedCellStates, outputGenerationBoard.printed());
         }
+         */
     }
 }
