@@ -1,3 +1,4 @@
+import domain.GreetingUseCase;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -26,6 +27,6 @@ public class GreetingUseCaseTest {
             String expectedGreeting
     ) {
         assertEquals(expectedGreeting,
-                new GreetingUseCase(new DeterministicDateTimeProvider(currentTime)).execute(userName));
+                new GreetingUseCase(new DeterministicTimeProvider(currentTime)).execute(userName));
     }
 }

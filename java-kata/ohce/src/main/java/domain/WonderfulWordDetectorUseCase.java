@@ -1,3 +1,5 @@
+package domain;
+
 public class WonderfulWordDetectorUseCase {
     public String execute(String wordSentByUser) {
         if (isPalindrome(wordSentByUser))

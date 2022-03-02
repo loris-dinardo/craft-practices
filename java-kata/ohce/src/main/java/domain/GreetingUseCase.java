@@ -1,14 +1,16 @@
+package domain;
+
 import java.time.LocalTime;
 
 public class GreetingUseCase {
-    private final DateTimeProvider dateTimeProvider;
+    private final TimeProvider timeProvider;
 
-    public GreetingUseCase(DateTimeProvider dateTimeProvider) {
-        this.dateTimeProvider = dateTimeProvider;
+    public GreetingUseCase(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
     }
 
     public String execute(String userName) {
-        LocalTime currentTime = dateTimeProvider.currentTime();
+        LocalTime currentTime = timeProvider.currentTime();
         if (isMorning(currentTime))
             return "¡Buenos días " + userName + "!";
         if (isAfternoon(currentTime))

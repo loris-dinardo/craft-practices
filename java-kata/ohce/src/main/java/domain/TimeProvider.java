@@ -1,5 +1,7 @@
+package domain;
+
 import java.time.LocalTime;
 
-public interface DateTimeProvider {
+public interface TimeProvider {
     LocalTime currentTime();
 }

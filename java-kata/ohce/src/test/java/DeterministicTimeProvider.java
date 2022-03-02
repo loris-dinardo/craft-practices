@@ -1,9 +1,11 @@
+import domain.TimeProvider;
+
 import java.time.LocalTime;
 
-public class DeterministicDateTimeProvider implements DateTimeProvider {
+public class DeterministicTimeProvider implements TimeProvider {
     private final LocalTime fixedTime;
 
-    public DeterministicDateTimeProvider(String currentTime) {
+    public DeterministicTimeProvider(String currentTime) {
         fixedTime = LocalTime.parse(currentTime);
     }
 
