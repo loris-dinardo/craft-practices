@@ -1,12 +1,12 @@
 package infrastructure.adapters;
 
 import domain.entities.DomainEvent;
-import domain.ports.EventPublisher;
+import domain.ports.GameEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryEventPublisher implements EventPublisher {
+public class InMemoryGameEventPublisher implements GameEventPublisher {
     private final List<DomainEvent> events = new ArrayList<>();
 
     @Override

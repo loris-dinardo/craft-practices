@@ -2,6 +2,6 @@ package domain.ports;
 
 import domain.entities.DomainEvent;
 
-public interface EventPublisher {
+public interface GameEventPublisher {
     void publish(DomainEvent event);
 }
