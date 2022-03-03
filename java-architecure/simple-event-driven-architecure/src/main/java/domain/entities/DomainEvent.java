@@ -7,7 +7,7 @@ public class DomainEvent {
         this.uuid = uuid;
     }
 
-    protected String getUuid() {
+    public String getUuid() {
         return uuid;
     }
 }

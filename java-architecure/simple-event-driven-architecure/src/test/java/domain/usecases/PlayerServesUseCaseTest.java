@@ -17,7 +17,7 @@ public class PlayerServesUseCaseTest {
             "Federer, 223h-bhcd-adbzc, Point_1, 'Federer has served for point Point_1'"
     })
     void whenGameStartsPlayerShouldServesAndNotifyOtherPlayer(
-            String playName,
+            String playerName,
             String eventUuid,
             String idPoint,
             String expectedOutput
@@ -26,7 +26,7 @@ public class PlayerServesUseCaseTest {
         InMemoryGameEventPublisher gameEventPublisher = new InMemoryGameEventPublisher();
         InMemoryGameOutputDisplay gameOutputDisplay = new InMemoryGameOutputDisplay();
 
-        new PlayerServesUseCase(uuidGenerator, gameEventPublisher, gameOutputDisplay).playerServesForPoint(playName, idPoint);
+        new PlayerServesUseCase(uuidGenerator, gameEventPublisher, gameOutputDisplay).playerServesForPoint(playerName, idPoint);
 
         assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint)));
         assertEquals(expectedOutput, gameOutputDisplay.printed());
