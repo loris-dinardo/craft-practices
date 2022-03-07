@@ -30,19 +30,19 @@ public class PlayerReturnsBallUseCase {
     }
 
     private void hasMissedTheBall(BallSentEvent ballSentEvent) {
+        gameOutputDisplay.print(ballSentEvent.getToPlayerName() + " missed the ball of point "
+                + ballSentEvent.getIdPoint() + " sent by " + ballSentEvent.getFromPlayerName());
         gameEventPublisher.publish(new BallMissedEvent(
                 ballSentEvent.getUuid(),
                 ballSentEvent.getIdPoint(),
                 ballSentEvent.getToPlayerName(),
                 ballSentEvent.getFromPlayerName())
         );
-        gameOutputDisplay.print(ballSentEvent.getToPlayerName() + " missed the ball of point "
-                + ballSentEvent.getIdPoint() + " sent by " + ballSentEvent.getFromPlayerName());
     }
 
     private void hasReturnedTheBall(BallSentEvent ballSentEvent) {
-        gameEventPublisher.publish(BallSentEvent.withReversedPlayersAndFrom(ballSentEvent));
         gameOutputDisplay.print(ballSentEvent.getToPlayerName() + " has returned the ball of point "
                 + ballSentEvent.getIdPoint() + " to " + ballSentEvent.getFromPlayerName());
+        gameEventPublisher.publish(BallSentEvent.withReversedPlayersAndFrom(ballSentEvent));
     }
 }

@@ -1,7 +1,7 @@
 package domain.ports;
 
-import domain.entities.DomainEvent;
+import domain.entities.PointEvent;
 
 public interface GameEventPublisher {
-    void publish(DomainEvent event);
+    void publish(PointEvent event);
 }

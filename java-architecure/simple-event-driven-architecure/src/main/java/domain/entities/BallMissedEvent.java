@@ -2,14 +2,12 @@ package domain.entities;
 
 import java.util.Objects;
 
-public class BallMissedEvent extends DomainEvent {
-    private final String idPoint;
+public class BallMissedEvent extends PointEvent {
     private final String missedByPlayerName;
     private final String sentByPlayerName;
 
     public BallMissedEvent(String uuid, String idPoint, String missedByPlayerName, String sentByPlayerName) {
-        super(uuid);
-        this.idPoint = idPoint;
+        super(uuid, idPoint);
         this.missedByPlayerName = missedByPlayerName;
         this.sentByPlayerName = sentByPlayerName;
     }
@@ -19,14 +17,14 @@ public class BallMissedEvent extends DomainEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BallMissedEvent that = (BallMissedEvent) o;
-        return Objects.equals(idPoint, that.idPoint)
-                && this.getUuid().equals(that.getUuid())
+        return this.getUuid().equals(that.getUuid())
+                && this.getIdPoint().equals(that.getIdPoint())
                 && Objects.equals(missedByPlayerName, that.missedByPlayerName)
                 && Objects.equals(sentByPlayerName, that.sentByPlayerName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUuid(), idPoint, missedByPlayerName, sentByPlayerName);
+        return Objects.hash(getUuid(), getIdPoint(), missedByPlayerName, sentByPlayerName);
     }
 }

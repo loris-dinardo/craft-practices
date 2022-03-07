@@ -19,7 +19,7 @@ public class PlayerServesUseCase {
     }
 
     public void playerServesForPoint(String playerName, String idPoint, String opponentName) {
-        gameEventPublisher.publish(new BallSentEvent(uuidGenerator.nextUUID(), idPoint, playerName, opponentName));
         gameOutputDisplay.print(playerName + " has served for point " + idPoint + " against " + opponentName);
+        gameEventPublisher.publish(new BallSentEvent(uuidGenerator.nextUUID(), idPoint, playerName, opponentName));
     }
 }

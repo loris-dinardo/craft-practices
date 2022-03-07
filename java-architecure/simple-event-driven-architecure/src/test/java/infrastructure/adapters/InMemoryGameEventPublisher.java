@@ -1,20 +1,20 @@
 package infrastructure.adapters;
 
-import domain.entities.DomainEvent;
+import domain.entities.PointEvent;
 import domain.ports.GameEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryGameEventPublisher implements GameEventPublisher {
-    private final List<DomainEvent> events = new ArrayList<>();
+    private final List<PointEvent> events = new ArrayList<>();
 
     @Override
-    public void publish(DomainEvent event) {
+    public void publish(PointEvent event) {
         this.events.add(event);
     }
 
-    public List<DomainEvent> events() {
+    public List<PointEvent> events() {
         return events;
     }
 }
