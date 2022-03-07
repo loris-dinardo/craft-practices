@@ -16,13 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PlayerReturnsBallUseCaseTest {
     @ParameterizedTest
     @CsvSource({
-            "Player A, eventUuid, idPoint, true, 'Player A has returned the ball of point idPoint'",
-            "Player A, eventUuid, idPoint, false, 'Player A missed the ball of point idPoint'"
+            "Player A, eventUuid, idPoint, Player B, true, 'Player A has returned the ball of point idPoint to Player B'",
+            "Player A, eventUuid, idPoint, Player B, false, 'Player A missed the ball of point idPoint sent by Player B'"
     })
     void whenPlayerSucceedsToReturnTheBallShouldNotifyOtherPlayer(
             String playerName,
             String eventUuid,
             String idPoint,
+            String opponentName,
             boolean playerHasHitTheBall,
             String expectedOutput
     ) {
@@ -34,12 +35,12 @@ public class PlayerReturnsBallUseCaseTest {
 
         new PlayerReturnsBallUseCase(
                 gameEventPublisher, gameOutputDisplay, doesPlayerHitTheBall
-        ).playerTriesToReturnTheBall(playerName, new BallSentEvent(eventUuid, idPoint));
+        ).playerTriesToReturnTheBall(playerName, new BallSentEvent(eventUuid, idPoint, opponentName, playerName));
 
         if (playerHasHitTheBall)
-            assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint)));
+            assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint, playerName, opponentName)));
         else
-            assertTrue(gameEventPublisher.events().contains(new BallMissedEvent(eventUuid, idPoint)));
+            assertTrue(gameEventPublisher.events().contains(new BallMissedEvent(eventUuid, idPoint, playerName, opponentName)));
         assertEquals(expectedOutput, gameOutputDisplay.printed());
     }
 }

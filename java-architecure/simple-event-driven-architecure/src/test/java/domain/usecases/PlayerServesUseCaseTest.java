@@ -13,22 +13,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PlayerServesUseCaseTest {
     @ParameterizedTest
     @CsvSource({
-            "Player A, eventUuid, idPoint, 'Player A has served for point idPoint'",
-            "Federer, 223h-bhcd-adbzc, Point_1, 'Federer has served for point Point_1'"
+            "Player A, eventUuid, idPoint, Player B, 'Player A has served for point idPoint against Player B'",
+            "Federer, 223h-bhcd-adbzc, Point_1, Nadal, 'Federer has served for point Point_1 against Nadal'"
     })
     void whenGameStartsPlayerShouldServesAndNotifyOtherPlayer(
             String playerName,
             String eventUuid,
             String idPoint,
+            String opponentName,
             String expectedOutput
     ) {
         InMemoryUUIDGenerator uuidGenerator = new InMemoryUUIDGenerator(eventUuid);
         InMemoryGameEventPublisher gameEventPublisher = new InMemoryGameEventPublisher();
         InMemoryGameOutputDisplay gameOutputDisplay = new InMemoryGameOutputDisplay();
 
-        new PlayerServesUseCase(uuidGenerator, gameEventPublisher, gameOutputDisplay).playerServesForPoint(playerName, idPoint);
+        new PlayerServesUseCase(uuidGenerator, gameEventPublisher, gameOutputDisplay).playerServesForPoint(playerName, idPoint, opponentName);
 
-        assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint)));
+        assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint, playerName, opponentName)));
         assertEquals(expectedOutput, gameOutputDisplay.printed());
     }
 }
