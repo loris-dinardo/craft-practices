@@ -35,7 +35,7 @@ public class PlayerReturnsBallUseCaseTest {
 
         new PlayerReturnsBallUseCase(
                 gameEventPublisher, gameOutputDisplay, doesPlayerHitTheBall
-        ).playerTriesToReturnTheBall(playerName, new BallSentEvent(eventUuid, idPoint, opponentName, playerName));
+        ).playerTriesToReturnTheBall(new BallSentEvent(eventUuid, idPoint, opponentName, playerName));
 
         if (playerHasHitTheBall)
             assertTrue(gameEventPublisher.events().contains(new BallSentEvent(eventUuid, idPoint, playerName, opponentName)));
