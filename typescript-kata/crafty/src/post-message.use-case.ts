@@ -12,19 +12,31 @@ export type PostMessageCommand = {
 }
 
 export interface MessageRepository {
-    save(msg: Message): void;
+    save(msg: Message): Promise<void>;
 }
 
 export interface DateProvider {
     getNow(): Date;
 }
 
-export class PostMessageCommandUseCase {
+export class MessageTooLongError extends Error {
+}
+
+export class EmptyMessageError extends Error {
+}
+
+export class PostMessageUseCase {
     constructor(private readonly messageRepository: MessageRepository,
                 private readonly dateProvider: DateProvider) {
     }
-    handle(command: PostMessageCommand) {
-        this.messageRepository.save({
+    async handle(command: PostMessageCommand) {
+        if (command.text.length > 280) {
+            throw new MessageTooLongError();
+        }
+        if (command.text.trim().length === 0) {
+            throw new EmptyMessageError();
+        }
+        await this.messageRepository.save({
             id: command.id,
             text: command.text,
             authorId: command.authorId,
