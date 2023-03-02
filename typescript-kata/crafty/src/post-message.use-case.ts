@@ -1,18 +1,9 @@
-export type Message = {
-    id: string;
-    text: string;
-    authorId: string;
-    publishedAt: Date;
-}
+import {MessageRepository} from "./message.repository";
 
 export type PostMessageCommand = {
     id: string;
     text: string;
     authorId: string;
-}
-
-export interface MessageRepository {
-    save(msg: Message): Promise<void>;
 }
 
 export interface DateProvider {
@@ -29,6 +20,7 @@ export class PostMessageUseCase {
     constructor(private readonly messageRepository: MessageRepository,
                 private readonly dateProvider: DateProvider) {
     }
+
     async handle(command: PostMessageCommand) {
         if (command.text.length > 280) {
             throw new MessageTooLongError();
