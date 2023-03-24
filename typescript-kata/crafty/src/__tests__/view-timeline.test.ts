@@ -1,42 +1,27 @@
-import {InMemoryMessageRepository} from "../in-memory-message-repository";
-import {ViewTimelineUseCase} from "../view-timeline.use-case";
-import {Message} from "../message";
-import {StubDateProvider} from "../stub-date-provider";
+import {createMessagingFixture, MessagingFixture} from "./messaging.fixture";
+import {messageBuilder} from "./message.builder";
 
 describe("Feature : Viewing a personal timeline", () => {
-    let fixture: Fixture;
+    let fixture: MessagingFixture;
 
     beforeEach(() => {
-        fixture = createFixture();
+        fixture = createMessagingFixture();
     });
 
     describe("Rule : Messages are shown in reverse chronological order", () => {
         test("Alice can view the 3 messages she published in her timeline", async () => {
+            const aliceMessageBuilder = messageBuilder().writtenBy("Alice");
+            const bobMessageBuilder = messageBuilder().writtenBy("Bob");
+
             fixture.givenTheFollowingMessagesWerePublished([
-                {
-                    id: "id-message-1",
-                    text: "My first message",
-                    authorId: "Alice",
-                    publishedAt: new Date("2023-01-21T15:26:00.000Z")
-                },
-                {
-                    id: "id-message-2",
-                    text: "Hi! I'm bob",
-                    authorId: "Bob",
-                    publishedAt: new Date("2023-01-21T15:28:00.000Z")
-                },
-                {
-                    id: "id-message-3",
-                    text: "My second message",
-                    authorId: "Alice",
-                    publishedAt: new Date("2023-01-21T15:30:00.000Z")
-                },
-                {
-                    id: "id-message-4",
-                    text: "My last message",
-                    authorId: "Alice",
-                    publishedAt: new Date("2023-01-21T15:30:30.000Z")
-                },
+                aliceMessageBuilder.withId("id-message-1").withText("My first message")
+                    .beingPublishedAt(new Date("2023-01-21T15:26:00.000Z")).build(),
+                bobMessageBuilder.withId("id-message-2").withText("Hi! I'm bob")
+                    .beingPublishedAt(new Date("2023-01-21T15:28:00.000Z")).build(),
+                aliceMessageBuilder.withId("id-message-3").withText("My second message")
+                    .beingPublishedAt(new Date("2023-01-21T15:30:00.000Z")).build(),
+                aliceMessageBuilder.withId("id-message-4").withText("My last message")
+                    .beingPublishedAt(new Date("2023-01-21T15:30:30.000Z")).build(),
             ]);
             fixture.givenNowIs(new Date("2023-01-21T15:31:00.000Z"));
 
@@ -119,26 +104,3 @@ describe("Feature : Viewing a personal timeline", () => {
         });
     });
 });
-
-const createFixture = () => {
-    let timeline: { authorId: string, text: string, publicationTime: string }[] = [];
-    const messageRepository = new InMemoryMessageRepository();
-    const dateProvider = new StubDateProvider();
-    const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
-    return {
-        givenTheFollowingMessagesWerePublished(messages: Message[]) {
-            messageRepository.givenExistingMessages(messages);
-        },
-        givenNowIs(now: Date) {
-            dateProvider.now = now;
-        },
-        async whenUserViewsTimelineOf(userId: string) {
-            timeline = await viewTimelineUseCase.handle({userId});
-        },
-        thenTimelineShouldBe(expectedTimeline: { authorId: string, text: string, publicationTime: string }[]) {
-            expect(timeline).toEqual(expectedTimeline);
-        }
-    }
-}
-
-type Fixture = ReturnType<typeof createFixture>;
