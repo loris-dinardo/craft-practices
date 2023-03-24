@@ -1,12 +1,12 @@
 import {
     EmptyMessageError,
-    Message,
     MessageTooLongError,
     PostMessageCommand,
     PostMessageUseCase
 } from "../post-message.use-case";
 import {InMemoryMessageRepository} from "../in-memory-message-repository";
 import {StubDateProvider} from "../stub-date-provider";
+import {Message} from "../message";
 
 describe("Feature: Posting a message", () => {
     let fixture: Fixture;

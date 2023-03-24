@@ -1,13 +1,10 @@
 import {MessageRepository} from "./message.repository";
+import {DateProvider} from "./date-time-provider";
 
 export type PostMessageCommand = {
     id: string;
     text: string;
     authorId: string;
-}
-
-export interface DateProvider {
-    getNow(): Date;
 }
 
 export class MessageTooLongError extends Error {
