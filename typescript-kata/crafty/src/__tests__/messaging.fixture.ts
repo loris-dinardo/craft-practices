@@ -3,6 +3,8 @@ import {InMemoryMessageRepository} from "../in-memory-message-repository";
 import {PostMessageCommand, PostMessageUseCase} from "../post-message.use-case";
 import {Message} from "../message";
 import {ViewTimelineUseCase} from "../view-timeline.use-case";
+import {EditMessageCommand} from "../edit-message.command";
+import {EditMessageUseCase} from "../edit-message.use-case";
 
 export const createMessagingFixture = () => {
     let timeline: { authorId: string, text: string, publicationTime: string }[] = [];
@@ -12,6 +14,7 @@ export const createMessagingFixture = () => {
         messageRepository,
         dateProvider
     );
+    const editMessageUseCase = new EditMessageUseCase(messageRepository);
     const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
     let thrownError: Error;
 
@@ -25,18 +28,22 @@ export const createMessagingFixture = () => {
         async whenUserPostsMessage(postMessageCommand: PostMessageCommand) {
             try {
                 await postMessageCommandUseCase.handle(postMessageCommand);
-            } catch (e: unknown) {
-                thrownError = e as Error
+            } catch (err) {
+                thrownError = err;
             }
         },
         async whenUserViewsTimelineOf(userId: string) {
             timeline = await viewTimelineUseCase.handle({userId});
         },
-        async whenUserEditsMessage(editMessageCommand: { messageId: string; text: string }) {
-
+        async whenUserEditsMessage(editMessageCommand: EditMessageCommand) {
+            try {
+                await editMessageUseCase.handle(editMessageCommand);
+            } catch (err) {
+                thrownError = err;
+            }
         },
-        thenMessageShouldBe(expectedMessage: Message) {
-            expect(expectedMessage).toEqual(messageRepository.getMessageById(expectedMessage.id));
+        async thenMessageShouldBe(expectedMessage: Message) {
+            expect(expectedMessage).toEqual(await messageRepository.findMessageById(expectedMessage.id));
         },
         thenTimelineShouldBe(expectedTimeline: { authorId: string, text: string, publicationTime: string }[]) {
             expect(timeline).toEqual(expectedTimeline);

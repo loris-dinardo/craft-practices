@@ -4,12 +4,16 @@ import {PostMessageCommand, PostMessageUseCase} from "./post-message.use-case";
 import {RealDateProvider} from "./real-date-provider";
 import {FileSystemMessageRepository} from "./file-system-message-repository";
 import {ViewTimelineUseCase} from "./view-timeline.use-case";
+import {EditMessageUseCase} from "./edit-message.use-case";
+import {EditMessageCommand} from "./edit-message.command";
 
 const messageRepository = new FileSystemMessageRepository();
 const dateProvider = new RealDateProvider();
 const postMessageUseCase = new PostMessageUseCase(
     messageRepository, dateProvider
 );
+
+const editMessageUseCase = new EditMessageUseCase(messageRepository);
 
 const viewTimelineUseCase = new ViewTimelineUseCase(
     messageRepository, dateProvider
@@ -21,7 +25,7 @@ program.version("0.0.1").description("Crafty CLI")
         new Command("post")
             .addArgument(new Argument("<user>", "the user to post the message"))
             .addArgument(new Argument("<message>", "the message to post"))
-            .description("Create a new Crafty project")
+            .description("Post a new message")
             .action(async (user, message) => {
                 const postMessageCommand: PostMessageCommand = {
                     id: `${Math.floor(Math.random() * 1000000)})}`,
@@ -31,6 +35,24 @@ program.version("0.0.1").description("Crafty CLI")
                 try {
                     await postMessageUseCase.handle(postMessageCommand);
                     console.log("Message posted");
+                } catch (err) {
+                    console.error("X", err);
+                }
+            })
+    )
+    .addCommand(
+        new Command("edit")
+            .addArgument(new Argument("<message-id>", "the message-id if the message to edit"))
+            .addArgument(new Argument("<message>", "the new message text"))
+            .description("Edit an existing message")
+            .action(async (messageId, message) => {
+                const editMessageCommand: EditMessageCommand = {
+                    messageId,
+                    text: message,
+                }
+                try {
+                    await editMessageUseCase.handle(editMessageCommand);
+                    console.log("Message edited");
                 } catch (err) {
                     console.error("X", err);
                 }
@@ -50,7 +72,8 @@ program.version("0.0.1").description("Crafty CLI")
                     process.exit(1);
                 }
             })
-    );
+    )
+;
 
 (async () => {
     await program.parseAsync(process.argv);

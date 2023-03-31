@@ -24,6 +24,12 @@ export class InMemoryMessageRepository implements MessageRepository {
     async findMessagesByAuthorId(userId: string): Promise<Message[]> {
         return Promise.resolve([
             ...this.messages.values()
-        ].filter(msg => msg.authorId === userId));
+        ].filter(msg => msg.authorId === userId)
+            // To be sure that message modified outside of repository will not be modified in repository
+            .map(msg => ({...msg})))
+    }
+
+    findMessageById(messageId: string): Promise<Message> {
+        return Promise.resolve(this.getMessageById(messageId)!);
     }
 }
