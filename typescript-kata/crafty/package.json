@@ -7,7 +7,8 @@
     "crafty": "node ./dist/index.js",
     "build": "tsc --noEmit ./src/index.ts && esbuild ./src/index.ts --bundle --platform=node --format=cjs --outdir=dist",
     "test": "jest --watchAll",
-    "test:verbose": "jest --watchAll --verbose"
+    "test:verbose": "jest --watchAll --verbose",
+    "test:it": "jest --testRegex '.*\\.it\\.ts$'"
   },
   "bin": {
     "crafty": "./dist/index.js"

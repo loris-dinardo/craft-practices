@@ -1,6 +1,6 @@
 import {MessageRepository} from "./message.repository";
 import {DateProvider} from "./date-time-provider";
-import {EmptyMessageError, MessageText, MessageTooLongError} from "./message";
+import {MessageText} from "./message";
 
 export type PostMessageCommand = {
     id: string;
