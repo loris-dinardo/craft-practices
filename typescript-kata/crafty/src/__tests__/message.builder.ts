@@ -1,4 +1,4 @@
-import {Message} from "../message";
+import {Message} from "../domain/message";
 
 interface MessageBuilderProps {
     id?: string;

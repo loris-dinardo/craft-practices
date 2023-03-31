@@ -1,6 +1,6 @@
-import {MessageRepository} from "./message.repository";
-import {DateProvider} from "./date-time-provider";
-import {Message} from "./message";
+import {MessageRepository} from "../gateways/message.repository";
+import {DateProvider} from "../gateways/date-time-provider";
+import {Message} from "../../domain/message";
 
 export type PostMessageCommand = {
     id: string;

@@ -1,10 +1,10 @@
-import {StubDateProvider} from "../stub-date-provider";
-import {InMemoryMessageRepository} from "../in-memory-message-repository";
-import {PostMessageCommand, PostMessageUseCase} from "../post-message.use-case";
-import {Message} from "../message";
-import {ViewTimelineUseCase} from "../view-timeline.use-case";
-import {EditMessageCommand} from "../edit-message.command";
-import {EditMessageUseCase} from "../edit-message.use-case";
+import {StubDateProvider} from "../infrastructure/stub-date-provider";
+import {InMemoryMessageRepository} from "../infrastructure/in-memory-message-repository";
+import {PostMessageCommand, PostMessageUseCase} from "../application/use-cases/post-message.use-case";
+import {Message} from "../domain/message";
+import {ViewTimelineUseCase} from "../application/use-cases/view-timeline.use-case";
+import {EditMessageCommand} from "../application/use-cases/commands/edit-message.command";
+import {EditMessageUseCase} from "../application/use-cases/edit-message.use-case";
 
 export const createMessagingFixture = () => {
     let timeline: { authorId: string, text: string, publicationTime: string }[] = [];

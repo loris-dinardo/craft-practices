@@ -1,5 +1,5 @@
-import {MessageRepository} from "./message.repository";
-import {DateProvider} from "./date-time-provider";
+import {MessageRepository} from "../gateways/message.repository";
+import {DateProvider} from "../gateways/date-time-provider";
 
 export class ViewTimelineUseCase {
     private readonly ONE_MINUTE = 60000;

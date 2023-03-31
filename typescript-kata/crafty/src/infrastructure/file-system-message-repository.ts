@@ -1,12 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
-import {MessageRepository} from "./message.repository";
-import {Message} from "./message";
+import {MessageRepository} from "../application/gateways/message.repository";
+import {Message} from "../domain/message";
 
 export class FileSystemMessageRepository implements MessageRepository {
     constructor(
         private readonly messagePath = path.join(__dirname, "messages.json")
     ) {
+        if (!fs.existsSync(this.messagePath)) {
+            fs.writeFileSync(this.messagePath, "[]");
+        }
     }
 
     async save(msg: Message): Promise<void> {

@@ -1,5 +1,5 @@
-import {EditMessageCommand} from "./edit-message.command";
-import {MessageRepository} from "./message.repository";
+import {EditMessageCommand} from "./commands/edit-message.command";
+import {MessageRepository} from "../gateways/message.repository";
 
 export class EditMessageUseCase {
     constructor(private readonly messageRepository: MessageRepository) {

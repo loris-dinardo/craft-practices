@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import {Argument, Command} from 'commander';
-import {PostMessageCommand, PostMessageUseCase} from "./post-message.use-case";
-import {RealDateProvider} from "./real-date-provider";
-import {FileSystemMessageRepository} from "./file-system-message-repository";
-import {ViewTimelineUseCase} from "./view-timeline.use-case";
-import {EditMessageUseCase} from "./edit-message.use-case";
-import {EditMessageCommand} from "./edit-message.command";
+import {PostMessageCommand, PostMessageUseCase} from "./application/use-cases/post-message.use-case";
+import {RealDateProvider} from "./infrastructure/real-date-provider";
+import {FileSystemMessageRepository} from "./infrastructure/file-system-message-repository";
+import {ViewTimelineUseCase} from "./application/use-cases/view-timeline.use-case";
+import {EditMessageUseCase} from "./application/use-cases/edit-message.use-case";
+import {EditMessageCommand} from "./application/use-cases/commands/edit-message.command";
 
 const messageRepository = new FileSystemMessageRepository();
 const dateProvider = new RealDateProvider();
