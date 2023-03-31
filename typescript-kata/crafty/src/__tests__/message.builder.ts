@@ -1,4 +1,4 @@
-import {Message, MessageText} from "../message";
+import {Message} from "../message";
 
 interface MessageBuilderProps {
     id?: string;
@@ -41,12 +41,12 @@ export const messageBuilder = ({
             });
         },
         build(): Message {
-            return {
+            return Message.fromData({
                 id: props.id,
                 authorId: props.authorId,
-                text: MessageText.of(props.text),
+                text: props.text,
                 publishedAt: props.publishedAt
-            }
+            });
         }
     }
 }
