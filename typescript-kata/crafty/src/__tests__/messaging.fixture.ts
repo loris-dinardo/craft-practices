@@ -5,9 +5,10 @@ import {Message} from "../domain/message";
 import {ViewTimelineUseCase} from "../application/use-cases/view-timeline.use-case";
 import {EditMessageCommand} from "../application/use-cases/commands/edit-message.command";
 import {EditMessageUseCase} from "../application/use-cases/edit-message.use-case";
+import {TimelineMessage} from "../domain/timeline";
 
 export const createMessagingFixture = () => {
-    let timeline: { authorId: string, text: string, publicationTime: string }[] = [];
+    let timelineMessages: TimelineMessage[] = [];
     const dateProvider = new StubDateProvider();
     const messageRepository = new InMemoryMessageRepository();
     const postMessageCommandUseCase = new PostMessageUseCase(
@@ -29,28 +30,29 @@ export const createMessagingFixture = () => {
             try {
                 await postMessageCommandUseCase.handle(postMessageCommand);
             } catch (err) {
-                thrownError = err;
+                thrownError = err as Error;
             }
         },
         async whenUserViewsTimelineOf(userId: string) {
-            timeline = await viewTimelineUseCase.handle({userId});
+            timelineMessages = await viewTimelineUseCase.handle({userId});
         },
         async whenUserEditsMessage(editMessageCommand: EditMessageCommand) {
             try {
                 await editMessageUseCase.handle(editMessageCommand);
             } catch (err) {
-                thrownError = err;
+                thrownError = err as Error;
             }
         },
         async thenMessageShouldBe(expectedMessage: Message) {
             expect(expectedMessage).toEqual(await messageRepository.findMessageById(expectedMessage.id));
         },
-        thenTimelineShouldBe(expectedTimeline: { authorId: string, text: string, publicationTime: string }[]) {
-            expect(timeline).toEqual(expectedTimeline);
+        thenTimelineShouldBe(expectedTimeline: TimelineMessage[]) {
+            expect(timelineMessages).toEqual(expectedTimeline);
         },
         thenErrorShouldBe(expectedErrorClass: new () => Error) {
             expect(thrownError).toBeInstanceOf(expectedErrorClass);
-        }
+        },
+        messageRepository,
     }
 }
 

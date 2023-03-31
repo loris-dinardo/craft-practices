@@ -29,18 +29,18 @@ describe("Feature : Viewing a personal timeline", () => {
 
             fixture.thenTimelineShouldBe([
                 {
-                    text: "My last message",
-                    authorId: "Alice",
+                    message: "My last message",
+                    user: "Alice",
                     publicationTime: "less than a minute ago"
                 },
                 {
-                    text: "My second message",
-                    authorId: "Alice",
+                    message: "My second message",
+                    user: "Alice",
                     publicationTime: "1 minute ago"
                 },
                 {
-                    text: "My first message",
-                    authorId: "Alice",
+                    message: "My first message",
+                    user: "Alice",
                     publicationTime: "5 minutes ago"
                 }
             ]);
