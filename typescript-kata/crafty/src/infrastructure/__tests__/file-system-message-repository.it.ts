@@ -1,7 +1,7 @@
 import * as path from "path";
-import {FileSystemMessageRepository} from "../infrastructure/file-system-message-repository";
+import {FileSystemMessageRepository} from "../file-system-message-repository";
 import * as fs from "fs";
-import {messageBuilder} from "./message.builder";
+import {messageBuilder} from "../../__tests__/message.builder";
 
 describe("File system message repository", () => {
     const testMessagePath = path.join(__dirname, "test-messages.json");
