@@ -1,24 +1,23 @@
-import {DateProvider} from "../gateways/date-time-provider";
 import {MessageRepository} from "../gateways/message.repository";
 import {FolloweesRepository} from "../gateways/followees.repository";
 import {ViewWallCommand} from "./commands/view-wall.command";
-import {Timeline, TimelineMessage} from "../../domain/timeline";
+import {Timeline} from "../../domain/timeline";
+import {TimelinePresenter} from "./presenters/timeline.presenter";
 
 export class ViewWallUseCase {
     constructor(
         private readonly messageRepository: MessageRepository,
-        private readonly followeesRepository: FolloweesRepository,
-        private readonly dateProvider: DateProvider,
+        private readonly followeesRepository: FolloweesRepository
     ) {
     }
 
-    async handle({user}: ViewWallCommand): Promise<TimelineMessage[]> {
+    async handle({user}: ViewWallCommand, presenter: TimelinePresenter): Promise<void> {
         const followees = await this.followeesRepository.getFolloweesOf(user);
         const messages = (await Promise.all(
             [user, ...followees].map(u =>
                 this.messageRepository.findMessagesByAuthorId(u))
         )).flat();
 
-        return new Timeline(messages, this.dateProvider.getNow()).data;
+        presenter.showTimeline(new Timeline(messages));
     }
 }

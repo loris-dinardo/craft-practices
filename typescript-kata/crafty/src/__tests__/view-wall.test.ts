@@ -5,6 +5,9 @@ import {StubDateProvider} from "../infrastructure/stub-date-provider";
 import {ViewWallUseCase} from "../application/use-cases/view-wall.use-case";
 import {MessageRepository} from "../application/gateways/message.repository";
 import {FolloweesRepository} from "../application/gateways/followees.repository";
+import {DefaultTimelinePresenter} from "../apps/default-timeline.presenter";
+import {TimelinePresenter} from "../application/use-cases/presenters/timeline.presenter";
+import {Timeline, TimelineMessage} from "../domain/timeline";
 
 describe("Feature: Viewing user wall", () => {
     let fixture: Fixture;
@@ -71,19 +74,24 @@ const createFixture = (
         messageRepository: MessageRepository,
         followeesRepository: FolloweesRepository,
     }) => {
-    let wall: { user: string, message: string, publicationTime: string }[] = [];
+    let wall: TimelineMessage[] = [];
     const dateProvider = new StubDateProvider();
     const viewWallUseCase = new ViewWallUseCase(
         messageRepository,
-        followeesRepository,
-        dateProvider
+        followeesRepository
     );
+    const defaultTimelinePresenter = new DefaultTimelinePresenter(dateProvider);
+    const timelinePresenter: TimelinePresenter = {
+        showTimeline(timeline: Timeline) {
+            wall = defaultTimelinePresenter.showTimeline(timeline);
+        }
+    }
     return {
         givenNowIs(date: Date) {
             dateProvider.now = date;
         },
         async whenUserViewsWallOf(user: string) {
-            wall = await viewWallUseCase.handle({user});
+            await viewWallUseCase.handle({user}, timelinePresenter);
         },
         thenShouldSee(expectedWall: { user: string, message: string, publicationTime: string }[]) {
             expect(wall).toEqual(expectedWall);

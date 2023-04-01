@@ -11,6 +11,7 @@ import {
     viewTimelineUseCase,
     viewWallUseCase
 } from "./dependencies";
+import {ApiTimelinePresenter} from "./api-timeline.presenter";
 
 const fastify = Fastify({logger: true});
 const routes = async (fastifyInstance: FastifyInstance) => {
@@ -18,7 +19,7 @@ const routes = async (fastifyInstance: FastifyInstance) => {
         async (request, reply) => {
             const {user, message} = request.body;
             const postMessageCommand: PostMessageCommand = {
-                id: `${Math.floor(Math.random() * 1000000)})}`,
+                id: `${Math.floor(Math.random() * 1000000)}`,
                 text: message,
                 authorId: user,
             }
@@ -61,8 +62,8 @@ const routes = async (fastifyInstance: FastifyInstance) => {
         async (request, reply) => {
             const {userId} = request.query;
             try {
-                const timeline = await viewTimelineUseCase.handle({userId});
-                reply.status(200).send(timeline);
+                const apiPresenter = new ApiTimelinePresenter(reply);
+                await viewTimelineUseCase.handle({userId}, apiPresenter);
             } catch (err) {
                 reply.send(httpErrors[500](err as string));
             }
@@ -71,8 +72,8 @@ const routes = async (fastifyInstance: FastifyInstance) => {
         async (request, reply) => {
             const {user} = request.query;
             try {
-                const wall = await viewWallUseCase.handle({user});
-                reply.status(200).send(wall);
+                const apiPresenter = new ApiTimelinePresenter(reply);
+               await viewWallUseCase.handle({user}, apiPresenter);
             } catch (err) {
                 reply.send(httpErrors[500](err as string));
             }

@@ -4,6 +4,7 @@ import {PostMessageCommand} from "../application/use-cases/post-message.use-case
 import {EditMessageCommand} from "../application/use-cases/commands/edit-message.command";
 import {FollowUserCommand} from "../application/use-cases/commands/follow-user.command";
 import {
+    defaultTimelinePresenter,
     editMessageUseCase,
     followUserUseCase,
     postMessageUseCase,
@@ -11,7 +12,9 @@ import {
     viewTimelineUseCase,
     viewWallUseCase
 } from "./dependencies";
+import {CliTimelinePresenter} from "./cli-timeline.presenter";
 
+const cliPresenter = new CliTimelinePresenter(defaultTimelinePresenter);
 const program = new Command();
 program.version("0.0.1").description("Crafty CLI")
     .addCommand(
@@ -21,7 +24,7 @@ program.version("0.0.1").description("Crafty CLI")
             .description("Post a new message")
             .action(async (user, message) => {
                 const postMessageCommand: PostMessageCommand = {
-                    id: `${Math.floor(Math.random() * 1000000)})}`,
+                    id: `${Math.floor(Math.random() * 1000000)}`,
                     text: message,
                     authorId: user,
                 }
@@ -75,7 +78,7 @@ program.version("0.0.1").description("Crafty CLI")
             .description("View timeline of a user")
             .action(async (userId) => {
                 try {
-                    const timeline = await viewTimelineUseCase.handle({userId});
+                    const timeline = await viewTimelineUseCase.handle({userId}, cliPresenter);
                     console.table(timeline);
                     process.exit(0);
                 } catch (err) {
@@ -90,7 +93,7 @@ program.version("0.0.1").description("Crafty CLI")
             .description("View wall of a user")
             .action(async (user) => {
                 try {
-                    const wall = await viewWallUseCase.handle({user});
+                    const wall = await viewWallUseCase.handle({user}, cliPresenter);
                     console.table(wall);
                     process.exit(0);
                 } catch (err) {

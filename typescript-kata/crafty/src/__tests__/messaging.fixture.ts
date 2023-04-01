@@ -5,7 +5,9 @@ import {Message} from "../domain/message";
 import {ViewTimelineUseCase} from "../application/use-cases/view-timeline.use-case";
 import {EditMessageCommand} from "../application/use-cases/commands/edit-message.command";
 import {EditMessageUseCase} from "../application/use-cases/edit-message.use-case";
-import {TimelineMessage} from "../domain/timeline";
+import {Timeline, TimelineMessage} from "../domain/timeline";
+import {DefaultTimelinePresenter} from "../apps/default-timeline.presenter";
+import {TimelinePresenter} from "../application/use-cases/presenters/timeline.presenter";
 
 export const createMessagingFixture = () => {
     let timelineMessages: TimelineMessage[] = [];
@@ -16,7 +18,13 @@ export const createMessagingFixture = () => {
         dateProvider
     );
     const editMessageUseCase = new EditMessageUseCase(messageRepository);
-    const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+    const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository);
+    const defaultTimelinePresenter = new DefaultTimelinePresenter(dateProvider);
+    const timelinePresenter: TimelinePresenter = {
+        showTimeline(timeline: Timeline) {
+            timelineMessages = defaultTimelinePresenter.showTimeline(timeline);
+        }
+    }
     let thrownError: Error;
 
     return {
@@ -34,7 +42,7 @@ export const createMessagingFixture = () => {
             }
         },
         async whenUserViewsTimelineOf(userId: string) {
-            timelineMessages = await viewTimelineUseCase.handle({userId});
+            await viewTimelineUseCase.handle({userId}, timelinePresenter);
         },
         async whenUserEditsMessage(editMessageCommand: EditMessageCommand) {
             try {

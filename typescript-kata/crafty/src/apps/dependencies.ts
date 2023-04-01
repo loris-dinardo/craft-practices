@@ -7,6 +7,7 @@ import {EditMessageUseCase} from "../application/use-cases/edit-message.use-case
 import {FollowUserUseCase} from "../application/use-cases/follow-user.use-case";
 import {ViewTimelineUseCase} from "../application/use-cases/view-timeline.use-case";
 import {ViewWallUseCase} from "../application/use-cases/view-wall.use-case";
+import {DefaultTimelinePresenter} from "./default-timeline.presenter";
 
 export const prismaClient = new PrismaClient();
 const messageRepository = new PrismaMessageRepository(prismaClient);
@@ -20,8 +21,9 @@ export const followUserUseCase = new FollowUserUseCase(
     followeesRepository
 );
 export const viewTimelineUseCase = new ViewTimelineUseCase(
-    messageRepository, dateProvider
+    messageRepository
 );
 export const viewWallUseCase = new ViewWallUseCase(
-    messageRepository, followeesRepository, dateProvider
+    messageRepository, followeesRepository
 );
+export const defaultTimelinePresenter = new DefaultTimelinePresenter(dateProvider);

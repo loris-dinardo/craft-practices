@@ -1,18 +1,16 @@
 import {MessageRepository} from "../gateways/message.repository";
-import {DateProvider} from "../gateways/date-time-provider";
-import {Timeline, TimelineMessage} from "../../domain/timeline";
+import {Timeline} from "../../domain/timeline";
+import {TimelinePresenter} from "./presenters/timeline.presenter";
 
 export class ViewTimelineUseCase {
     constructor(
-        private readonly messageRepository: MessageRepository,
-        private readonly dateProvider: DateProvider
+        private readonly messageRepository: MessageRepository
     ) {
     }
 
-    async handle({userId}: { userId: string }): Promise<TimelineMessage[]> {
+    async handle({userId}: { userId: string }, presenter: TimelinePresenter): Promise<void> {
         const messagesOfUser = await this.messageRepository
             .findMessagesByAuthorId(userId);
-
-        return new Timeline(messagesOfUser, this.dateProvider.getNow()).data;
+        presenter.showTimeline(new Timeline(messagesOfUser));
     }
 }
