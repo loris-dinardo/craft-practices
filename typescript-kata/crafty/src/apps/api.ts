@@ -24,8 +24,13 @@ const routes = async (fastifyInstance: FastifyInstance) => {
                 authorId: user,
             }
             try {
-                await postMessageUseCase.handle(postMessageCommand);
-                reply.status(201).send();
+                const result = await postMessageUseCase.handle(postMessageCommand);
+                if (result.isOk()) {
+                    reply.status(201).send();
+                    return;
+                } else {
+                    reply.send(httpErrors[400](result.error.toString()));
+                }
             } catch (err) {
                 reply.send(httpErrors[500](err as string));
             }
@@ -38,8 +43,13 @@ const routes = async (fastifyInstance: FastifyInstance) => {
                 text: message,
             }
             try {
-                await editMessageUseCase.handle(editMessageCommand);
-                reply.status(200).send();
+                const result = await editMessageUseCase.handle(editMessageCommand);
+                if (result.isOk()) {
+                    reply.status(201).send();
+                    return;
+                } else {
+                    reply.send(httpErrors[400](result.error.toString()));
+                }
             } catch (err) {
                 reply.send(httpErrors[500](err as string));
             }
@@ -73,7 +83,7 @@ const routes = async (fastifyInstance: FastifyInstance) => {
             const {user} = request.query;
             try {
                 const apiPresenter = new ApiTimelinePresenter(reply);
-               await viewWallUseCase.handle({user}, apiPresenter);
+                await viewWallUseCase.handle({user}, apiPresenter);
             } catch (err) {
                 reply.send(httpErrors[500](err as string));
             }

@@ -29,8 +29,13 @@ program.version("0.0.1").description("Crafty CLI")
                     authorId: user,
                 }
                 try {
-                    await postMessageUseCase.handle(postMessageCommand);
-                    console.log("Message posted");
+                    const result = await postMessageUseCase.handle(postMessageCommand);
+                    if (result.isOk()){
+                        console.log("Message posted");
+                        process.exit(0);
+                    }
+                    console.error("X", result.error);
+                    process.exit(1);
                 } catch (err) {
                     console.error("X", err);
                 }
@@ -47,8 +52,13 @@ program.version("0.0.1").description("Crafty CLI")
                     text: message,
                 }
                 try {
-                    await editMessageUseCase.handle(editMessageCommand);
-                    console.log("Message edited");
+                    const result = await editMessageUseCase.handle(editMessageCommand);
+                    if (result.isOk()){
+                        console.log("Message edited");
+                        process.exit(0);
+                    }
+                    console.error("X", result.error);
+                    process.exit(1);
                 } catch (err) {
                     console.error("X", err);
                 }

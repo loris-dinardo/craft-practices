@@ -35,20 +35,18 @@ export const createMessagingFixture = () => {
             dateProvider.now = now;
         },
         async whenUserPostsMessage(postMessageCommand: PostMessageCommand) {
-            try {
-                await postMessageCommandUseCase.handle(postMessageCommand);
-            } catch (err) {
-                thrownError = err as Error;
+            const result = await postMessageCommandUseCase.handle(postMessageCommand);
+            if (result.isErr()) {
+                thrownError = result.error;
             }
         },
         async whenUserViewsTimelineOf(userId: string) {
             await viewTimelineUseCase.handle({userId}, timelinePresenter);
         },
         async whenUserEditsMessage(editMessageCommand: EditMessageCommand) {
-            try {
-                await editMessageUseCase.handle(editMessageCommand);
-            } catch (err) {
-                thrownError = err as Error;
+            const result = await editMessageUseCase.handle(editMessageCommand);
+            if (result.isErr()) {
+                thrownError = result.error;
             }
         },
         async thenMessageShouldBe(expectedMessage: Message) {
