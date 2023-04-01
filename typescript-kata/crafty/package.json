@@ -4,14 +4,12 @@
   "author": "Loris Di Nardo Di Maio",
   "license": "MIT",
   "scripts": {
-    "crafty": "node ./dist/index.js",
+    "crafty:cli": "node ./dist/apps/cli.js",
+    "crafty:api": "node ./dist/apps/api.js",
     "build": "rm -rf dist && tsc",
     "test": "jest --watchAll",
     "test:verbose": "jest --watchAll --verbose",
     "test:it": "jest --testRegex '.*\\.it\\.ts$'"
-  },
-  "bin": {
-    "crafty": "./dist/index.js"
   },
   "prisma": {
     "schema": "./src/infrastructure/prisma/schema.prisma",
@@ -19,11 +17,14 @@
   },
   "dependencies": {
     "@prisma/client": "4.12.0",
-    "commander": "10.0.0"
+    "commander": "10.0.0",
+    "fastify": "4.15.0",
+    "http-errors": "2.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
     "@types/node": "18.14.0",
+    "@types/http-errors": "2.0.1",
     "esbuild": "0.17.10",
     "jest": "29.4.3",
     "prisma": "4.12.0",

@@ -1,34 +1,18 @@
 #!/usr/bin/env node
 import {Argument, Command} from 'commander';
-import {PostMessageCommand, PostMessageUseCase} from "./application/use-cases/post-message.use-case";
-import {RealDateProvider} from "./infrastructure/real-date-provider";
-import {FileSystemMessageRepository} from "./infrastructure/file-system-message-repository";
-import {ViewTimelineUseCase} from "./application/use-cases/view-timeline.use-case";
-import {EditMessageUseCase} from "./application/use-cases/edit-message.use-case";
-import {EditMessageCommand} from "./application/use-cases/commands/edit-message.command";
-import {FollowUserUseCase} from "./application/use-cases/follow-user.use-case";
-import {FileSystemFolloweesRepository} from "./infrastructure/file-system-followees-repository";
-import {FollowUserCommand} from "./application/use-cases/commands/follow-user.command";
-import {ViewWallUseCase} from "./application/use-cases/view-wall.use-case";
+import {PostMessageCommand} from "../application/use-cases/post-message.use-case";
+import {EditMessageCommand} from "../application/use-cases/commands/edit-message.command";
+import {FollowUserCommand} from "../application/use-cases/commands/follow-user.command";
+import {
+    editMessageUseCase,
+    followUserUseCase,
+    postMessageUseCase,
+    prismaClient,
+    viewTimelineUseCase,
+    viewWallUseCase
+} from "./dependencies";
 
-const messageRepository = new FileSystemMessageRepository();
-const followeesRepository = new FileSystemFolloweesRepository();
-const dateProvider = new RealDateProvider();
-const postMessageUseCase = new PostMessageUseCase(
-    messageRepository, dateProvider
-);
-const editMessageUseCase = new EditMessageUseCase(messageRepository);
-const followUserUseCase = new FollowUserUseCase(
-    followeesRepository
-);
-const viewTimelineUseCase = new ViewTimelineUseCase(
-    messageRepository, dateProvider
-);
-const viewWallUseCase = new ViewWallUseCase(
-    messageRepository, followeesRepository, dateProvider
-)
 const program = new Command();
-
 program.version("0.0.1").description("Crafty CLI")
     .addCommand(
         new Command("post")
@@ -118,5 +102,7 @@ program.version("0.0.1").description("Crafty CLI")
 ;
 
 (async () => {
+    await prismaClient.$connect();
     await program.parseAsync(process.argv);
+    await prismaClient.$disconnect();
 })();
