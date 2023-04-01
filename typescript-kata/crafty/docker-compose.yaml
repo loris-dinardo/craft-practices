@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  crafty-database:
+    container_name: crafty-database
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=mydb
+    ports:
+      - "5432:5432"
+    networks:
+      - db_network
+  crafty-pgadmin:
+    container_name: crafty-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.ch
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8080:80"
+    networks:
+      - db_network
+
+networks:
+  db_network:
